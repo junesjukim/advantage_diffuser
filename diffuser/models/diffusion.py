@@ -47,6 +47,9 @@ class GaussianDiffusion(nn.Module):
         action_weight=1.0, loss_discount=1.0, loss_weights=None,
     ):
         super().__init__()
+        #check for correct module installation, import
+        print("imported diffusion.py for diffusion")
+        
         self.horizon = horizon
         self.observation_dim = observation_dim
         self.action_dim = action_dim
