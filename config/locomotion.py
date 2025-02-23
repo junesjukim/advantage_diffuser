@@ -173,7 +173,7 @@ halfcheetah_medium_replay_v2 = halfcheetah_medium_v2 = halfcheetah_medium_expert
     },
     'plan': {
         'horizon': 4,
-        'scale': 0.001,
+        'scale': 0.0,
         't_stopgrad': 4,
     },
 }
@@ -189,7 +189,7 @@ walker2d_medium_replay_v2 = walker2d_medium_v2 = walker2d_medium_expert_v2 = {
     },
     'plan': {
         'horizon': 4,
-        'scale': 0.001,
+        'scale': 0.0,
         't_stopgrad': 0,
     },
 }
@@ -205,7 +205,7 @@ hopper_medium_replay_v2 = hopper_medium_v2 = hopper_medium_expert_v2 = {
     },
     'plan': {
         'horizon': 4,
-        'scale': 0.0001,
+        'scale': 0.0,
         't_stopgrad': 0,
     },
 }
