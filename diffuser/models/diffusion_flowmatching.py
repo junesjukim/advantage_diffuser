@@ -157,11 +157,17 @@ class GaussianDiffusion(nn.Module):
         x_noisy = x
         print(f"shape of x_noisy is{x_noisy.shape}")
 
-        v_t = self.model(x_noisy, cond, t)
+        model_output = self.model(x_noisy, cond, t)
         
-        print(f"shape of v_t is{v_t.shape}")
+        print(f"shape of v_t is{model_output.shape}")
 
-        x_less_noisy = x_noisy + v_t * (float)(1/self.n_timesteps)
+        if self.predict_epsilon:
+            # velocity를 예측하는 기존 방식
+            x_less_noisy = x_noisy + model_output * (float)(1/self.n_timesteps)
+        else:
+            # x_start를 직접 예측하는 방식
+            x_less_noisy = model_output
+            
         x_less_noisy = apply_conditioning(x_less_noisy, cond, self.action_dim)
 
         return x_less_noisy
@@ -232,19 +238,19 @@ class GaussianDiffusion(nn.Module):
         x_noisy = apply_conditioning(x_noisy, cond, self.action_dim)
 
         theta_min = 0.0
-        v_t_predict = self.model(x_noisy, cond, t)
-        v_t_predict = apply_conditioning(v_t_predict, cond, self.action_dim)
-        #v_t의 s0 자리가 loss에 영향을 미치지 않도록 apply_conditioning을 이용함.
-        v_t_true = x_start - (1- theta_min) * noise
-        v_t_true = apply_conditioning(v_t_true, cond, self.action_dim)
-
-        assert v_t_true.shape == v_t_predict.shape
+        model_output = self.model(x_noisy, cond, t)
+        model_output = apply_conditioning(model_output, cond, self.action_dim)
 
         if self.predict_epsilon:
-            loss, info = self.loss_fn(v_t_predict, v_t_true)
+            # velocity 예측 방식
+            v_t_true = x_start - (1- theta_min) * noise
+            target = v_t_true
         else:
-            loss, info = self.loss_fn(v_t_predict, v_t_true)
+            # x_start 직접 예측 방식
+            target = x_start
 
+        assert model_output.shape == target.shape
+        loss, info = self.loss_fn(model_output, target)
         return loss, info
 
     def loss(self, x, *args):
