@@ -56,42 +56,119 @@ class GaussianDiffusion(nn.Module):
         self.transition_dim = observation_dim + action_dim
         self.model = model
 
+        self._original_n_timesteps = int(n_timesteps)
+        self.setup_diffusion_parameters(n_timesteps)
+
+        ## get loss coefficients and initialize objective
+        loss_weights = self.get_loss_weights(action_weight, loss_discount, loss_weights)
+        self.loss_fn = Losses[loss_type](loss_weights, self.action_dim)
+
+    def setup_diffusion_parameters(self, n_timesteps):
+        """
+        Sets up diffusion parameters based on the number of timesteps
+        """
         betas = cosine_beta_schedule(n_timesteps)
         alphas = 1. - betas
         alphas_cumprod = torch.cumprod(alphas, axis=0)
         alphas_cumprod_prev = torch.cat([torch.ones(1), alphas_cumprod[:-1]])
 
         self.n_timesteps = int(n_timesteps)
-        self.clip_denoised = clip_denoised
-        self.predict_epsilon = predict_epsilon
+        self.clip_denoised = getattr(self, 'clip_denoised', True)
+        self.predict_epsilon = getattr(self, 'predict_epsilon', True)
 
-        self.register_buffer('betas', betas)
-        self.register_buffer('alphas_cumprod', alphas_cumprod)
-        self.register_buffer('alphas_cumprod_prev', alphas_cumprod_prev)#수정해야함!!!
+        # Register or update buffer
+        if not hasattr(self, 'betas'):
+            self.register_buffer('betas', betas)
+        else:
+            self.betas = betas.to(self.betas.device)
+            
+        if not hasattr(self, 'alphas_cumprod'):
+            self.register_buffer('alphas_cumprod', alphas_cumprod)
+        else:
+            self.alphas_cumprod = alphas_cumprod.to(self.alphas_cumprod.device)
+            
+        if not hasattr(self, 'alphas_cumprod_prev'):
+            self.register_buffer('alphas_cumprod_prev', alphas_cumprod_prev)
+        else:
+            self.alphas_cumprod_prev = alphas_cumprod_prev.to(self.alphas_cumprod_prev.device)
 
-        # calculations for diffusion q(x_t | x_{t-1}) and others
-        self.register_buffer('sqrt_alphas_cumprod', torch.sqrt(alphas_cumprod))
-        self.register_buffer('sqrt_one_minus_alphas_cumprod', torch.sqrt(1. - alphas_cumprod))
-        self.register_buffer('log_one_minus_alphas_cumprod', torch.log(1. - alphas_cumprod))
-        self.register_buffer('sqrt_recip_alphas_cumprod', torch.sqrt(1. / alphas_cumprod))
-        self.register_buffer('sqrt_recipm1_alphas_cumprod', torch.sqrt(1. / alphas_cumprod - 1))
+        # Calculations for diffusion q(x_t | x_{t-1}) and others
+        if not hasattr(self, 'sqrt_alphas_cumprod'):
+            self.register_buffer('sqrt_alphas_cumprod', torch.sqrt(alphas_cumprod))
+        else:
+            self.sqrt_alphas_cumprod = torch.sqrt(alphas_cumprod).to(self.sqrt_alphas_cumprod.device)
+            
+        if not hasattr(self, 'sqrt_one_minus_alphas_cumprod'):
+            self.register_buffer('sqrt_one_minus_alphas_cumprod', torch.sqrt(1. - alphas_cumprod))
+        else:
+            self.sqrt_one_minus_alphas_cumprod = torch.sqrt(1. - alphas_cumprod).to(self.sqrt_one_minus_alphas_cumprod.device)
+            
+        if not hasattr(self, 'log_one_minus_alphas_cumprod'):
+            self.register_buffer('log_one_minus_alphas_cumprod', torch.log(1. - alphas_cumprod))
+        else:
+            self.log_one_minus_alphas_cumprod = torch.log(1. - alphas_cumprod).to(self.log_one_minus_alphas_cumprod.device)
+            
+        if not hasattr(self, 'sqrt_recip_alphas_cumprod'):
+            self.register_buffer('sqrt_recip_alphas_cumprod', torch.sqrt(1. / alphas_cumprod))
+        else:
+            self.sqrt_recip_alphas_cumprod = torch.sqrt(1. / alphas_cumprod).to(self.sqrt_recip_alphas_cumprod.device)
+            
+        if not hasattr(self, 'sqrt_recipm1_alphas_cumprod'):
+            self.register_buffer('sqrt_recipm1_alphas_cumprod', torch.sqrt(1. / alphas_cumprod - 1))
+        else:
+            self.sqrt_recipm1_alphas_cumprod = torch.sqrt(1. / alphas_cumprod - 1).to(self.sqrt_recipm1_alphas_cumprod.device)
 
-        # calculations for posterior q(x_{t-1} | x_t, x_0)
+        # Calculations for posterior q(x_{t-1} | x_t, x_0)
         posterior_variance = betas * (1. - alphas_cumprod_prev) / (1. - alphas_cumprod)
-        self.register_buffer('posterior_variance', posterior_variance)
-
-        ## log calculation clipped because the posterior variance
-        ## is 0 at the beginning of the diffusion chain
-        self.register_buffer('posterior_log_variance_clipped',
-            torch.log(torch.clamp(posterior_variance, min=1e-20)))
-        self.register_buffer('posterior_mean_coef1',
-            betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod))
-        self.register_buffer('posterior_mean_coef2',
-            (1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod))
-
-        ## get loss coefficients and initialize objective
-        loss_weights = self.get_loss_weights(action_weight, loss_discount, loss_weights)
-        self.loss_fn = Losses[loss_type](loss_weights, self.action_dim)
+        
+        if not hasattr(self, 'posterior_variance'):
+            self.register_buffer('posterior_variance', posterior_variance)
+        else:
+            self.posterior_variance = posterior_variance.to(self.posterior_variance.device)
+            
+        if not hasattr(self, 'posterior_log_variance_clipped'):
+            self.register_buffer('posterior_log_variance_clipped',
+                torch.log(torch.clamp(posterior_variance, min=1e-20)))
+        else:
+            self.posterior_log_variance_clipped = torch.log(torch.clamp(posterior_variance, min=1e-20)).to(self.posterior_log_variance_clipped.device)
+            
+        if not hasattr(self, 'posterior_mean_coef1'):
+            self.register_buffer('posterior_mean_coef1',
+                betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod))
+        else:
+            self.posterior_mean_coef1 = (betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod)).to(self.posterior_mean_coef1.device)
+            
+        if not hasattr(self, 'posterior_mean_coef2'):
+            self.register_buffer('posterior_mean_coef2',
+                (1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod))
+        else:
+            self.posterior_mean_coef2 = ((1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod)).to(self.posterior_mean_coef2.device)
+            
+    def adjust_diffusion_steps(self, n_steps):
+        """
+        Adjusts the diffusion model to use a different number of timesteps than what it was trained with.
+        This allows planning with various levels of diffusion steps.
+        
+        Args:
+            n_steps: The new number of diffusion steps to use
+        """
+        print(f"Adjusting diffusion steps from {self.n_timesteps} to {n_steps}")
+        
+        # Store the current timesteps for potential reset
+        self._current_steps = n_steps
+        
+        if n_steps == self.n_timesteps:
+            return  # No change needed
+            
+        # Calculate new diffusion parameters
+        self.setup_diffusion_parameters(n_steps)
+        
+    def reset_diffusion_steps(self):
+        """
+        Resets the diffusion model to use the original number of timesteps it was trained with.
+        """
+        if hasattr(self, '_original_n_timesteps'):
+            self.adjust_diffusion_steps(self._original_n_timesteps)
 
     def get_loss_weights(self, action_weight, discount, weights_dict):
         '''
