@@ -3800,3 +3800,1254 @@ Started job for seed 0 on GPU 2
 Started job for seed 0 on GPU 3
 All jobs have been completed.
 All jobs have been completed.
+Started job for seed 0 on GPU 0
+Started job for seed 0 on GPU 1
+GPU 0에서 시드 0로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+GPU 0에서 시드 0로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+GPU 1에서 시드 0로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+GPU 2에서 시드 0로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+GPU 3에서 시드 0로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 0에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 1로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+GPU 4에서 시드 0로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 0에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 1로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 0에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 1로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 1에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 2로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 1에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 2로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 1에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 2로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 0에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 1로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 2에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 3로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 3에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 4로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 2에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 3로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 2에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 3로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 1에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 2로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 3에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 4로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 3에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 4로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 4에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 5로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 2에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 3로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 4에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 5로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 4에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 5로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 3에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 4로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 5에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 6로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 5에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 6로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 5에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 6로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 4에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 5로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 6에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 7로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 7에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 8로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 6에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 7로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 6에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 7로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 5에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 6로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 7에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 8로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 7에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 8로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 8에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 9로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 6에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 7로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 8에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 9로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 8에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 9로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 7에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 8로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 9에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 10로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 9에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 10로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 9에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 10로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 8에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 9로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 10에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 11로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 0에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 1로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 10에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 11로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 9에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 10로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 10에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 11로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 11에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 12로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 1에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 2로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 11에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 12로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 10에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 11로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 11에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 12로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 12에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 13로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 2에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 3로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 12에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 13로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 11에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 12로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 12에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 13로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 13에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 14로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 3에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 4로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 13에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 14로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 12에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 13로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 13에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 14로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 14에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 15로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 4에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 5로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 14에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 15로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 13에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 14로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 14에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 15로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 15에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 16로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 5에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 6로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 15에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 16로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 14에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 15로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 15에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 16로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 16에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 17로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 6에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 7로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 7에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 8로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 16에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 17로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 15에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 16로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 16에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 17로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 17에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 18로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 17에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 18로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 17에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 18로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 8에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 9로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 16에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 17로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 18에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 19로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 18에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 19로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 18에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 19로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 17에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 18로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 9에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 10로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 19에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 20로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 19에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 20로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 19에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 20로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 18에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 19로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 10에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 11로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 20에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 21로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 20에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 21로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 20에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 21로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 19에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 20로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 11에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 12로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 21에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 22로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 21에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 22로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 21에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 22로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 20에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 21로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 12에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 13로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 22에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 23로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 22에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 23로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 22에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 23로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 21에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 22로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 13에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 14로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 23에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 24로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 23에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 24로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 23에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 24로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 22에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 23로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 14에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 15로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 24에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 25로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 24에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 25로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 24에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 25로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 23에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 24로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 15에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 16로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 25에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 26로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 25에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 26로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 25에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 26로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 24에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 25로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 16에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 17로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 26에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 27로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 26에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 27로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 26에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 27로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 25에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 26로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 17에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 18로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 27에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 28로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 27에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 28로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 27에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 28로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 26에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 27로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 18에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 19로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 28에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 29로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 28에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 29로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 28에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 29로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 27에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 28로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 19에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 20로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 29에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 30로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 29에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 30로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 29에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 30로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 28에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 29로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 20에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 21로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 30에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 31로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 30에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 31로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 30에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 31로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 29에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 30로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 21에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 22로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 31에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 32로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 31에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 32로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 31에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 32로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 30에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 31로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 22에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 23로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+./diffuser_plan.sh: line 42: 1462863 Killed                  OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py --dataset ${DATASETS[$i]} --logbase logs --diffusion_loadpath "f:diffusion/diffuser_H32_T${n_diffusion_steps}_S0" --value_loadpath "f:values/diffusion_H32_T${n_diffusion_steps}_S0_d0.99" --horizon 32 --n_diffusion_steps ${n_diffusion_steps} --seed $seed --discount 0.99 --prefix 'plans/pen' > output/diffuser_plan_pen/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1
+시드 32에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 33로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+./diffuser_plan.sh: line 42: 1462670 Killed                  OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py --dataset ${DATASETS[$i]} --logbase logs --diffusion_loadpath "f:diffusion/diffuser_H32_T${n_diffusion_steps}_S0" --value_loadpath "f:values/diffusion_H32_T${n_diffusion_steps}_S0_d0.99" --horizon 32 --n_diffusion_steps ${n_diffusion_steps} --seed $seed --discount 0.99 --prefix 'plans/pen' > output/diffuser_plan_pen/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1
+시드 32에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 33로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+./diffuser_plan.sh: line 42: 1462906 Killed                  OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py --dataset ${DATASETS[$i]} --logbase logs --diffusion_loadpath "f:diffusion/diffuser_H32_T${n_diffusion_steps}_S0" --value_loadpath "f:values/diffusion_H32_T${n_diffusion_steps}_S0_d0.99" --horizon 32 --n_diffusion_steps ${n_diffusion_steps} --seed $seed --discount 0.99 --prefix 'plans/pen' > output/diffuser_plan_pen/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1
+시드 31에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 32로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+./diffuser_plan.sh: line 42: 1463164 Killed                  OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py --dataset ${DATASETS[$i]} --logbase logs --diffusion_loadpath "f:diffusion/diffuser_H32_T${n_diffusion_steps}_S0" --value_loadpath "f:values/diffusion_H32_T${n_diffusion_steps}_S0_d0.99" --horizon 32 --n_diffusion_steps ${n_diffusion_steps} --seed $seed --discount 0.99 --prefix 'plans/pen' > output/diffuser_plan_pen/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1
+시드 23에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 24로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+./diffuser_plan.sh: line 42: 1462568 Killed                  OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py --dataset ${DATASETS[$i]} --logbase logs --diffusion_loadpath "f:diffusion/diffuser_H32_T${n_diffusion_steps}_S0" --value_loadpath "f:values/diffusion_H32_T${n_diffusion_steps}_S0_d0.99" --horizon 32 --n_diffusion_steps ${n_diffusion_steps} --seed $seed --discount 0.99 --prefix 'plans/pen' > output/diffuser_plan_pen/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1
+시드 32에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 33로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 33에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 34로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 32에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 33로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 24에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 25로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 33에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 34로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 33에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 34로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 34에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 35로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 33에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 34로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 25에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 26로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 34에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 35로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 34에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 35로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 35에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 36로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 26에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 27로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 34에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 35로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 35에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 36로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 35에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 36로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 36에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 37로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 27에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 28로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 35에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 36로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 36에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 37로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 36에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 37로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 37에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 38로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 28에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 29로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 37에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 38로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 36에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 37로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 37에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 38로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 29에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 30로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 38에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 39로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 37에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 38로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 38에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 39로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 38에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 39로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 39에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 40로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 30에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 31로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 38에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 39로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 39에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 40로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 39에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 40로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 31에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 32로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 40에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 41로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 39에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 40로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 40에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 41로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 32에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 33로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 41에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 42로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 40에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 41로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 40에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 41로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 41에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 42로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 33에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 34로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 42에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 43로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 41에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 42로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 41에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 42로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 42에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 43로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 34에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 35로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 43에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 44로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 42에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 43로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 42에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 43로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 43에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 44로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 35에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 36로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 44에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 45로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 43에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 44로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 43에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 44로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 44에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 45로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 36에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 37로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 45에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 46로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 44에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 45로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 44에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 45로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 45에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 46로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 37에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 38로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 46에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 47로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 45에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 46로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 45에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 46로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 46에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 47로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 38에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 39로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 47에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 48로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 46에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 47로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 46에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 47로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 47에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 48로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 39에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 40로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 48에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 49로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 47에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 48로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 47에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 48로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 48에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 49로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 40에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 41로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 49에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 50로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 48에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 49로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 48에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 49로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 49에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 50로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 41에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 42로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 50에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 51로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 49에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 50로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 49에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 50로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 50에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 51로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 42에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 43로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 51에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 52로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 50에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 51로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 50에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 51로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 51에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 52로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 43에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 44로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 52에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 53로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 51에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 52로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 51에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 52로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 52에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 53로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 44에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 45로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 53에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 54로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 52에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 53로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 52에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 53로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 53에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 54로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 45에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 46로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 54에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 55로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 53에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 54로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 53에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 54로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 54에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 55로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 46에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 47로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 55에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 56로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 54에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 55로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 54에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 55로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 55에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 56로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 47에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 48로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 56에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 57로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 55에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 56로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 55에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 56로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 56에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 57로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 48에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 49로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 57에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 58로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 56에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 57로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 56에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 57로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 57에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 58로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 49에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 50로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 58에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 59로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 57에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 58로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 57에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 58로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 58에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 59로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 50에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 51로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 59에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 60로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 58에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 59로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 58에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 59로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 59에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 60로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 51에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 52로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 60에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 61로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 59에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 60로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 59에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 60로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 60에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 61로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 52에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 53로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 61에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 62로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 60에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 61로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 60에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 61로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 61에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 62로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+./diffuser_plan.sh: line 42: 1490935 Killed                  OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py --dataset ${DATASETS[$i]} --logbase logs --diffusion_loadpath "f:diffusion/diffuser_H32_T${n_diffusion_steps}_S0" --value_loadpath "f:values/diffusion_H32_T${n_diffusion_steps}_S0_d0.99" --horizon 32 --n_diffusion_steps ${n_diffusion_steps} --seed $seed --discount 0.99 --prefix 'plans/pen' > output/diffuser_plan_pen/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1
+시드 62에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 63로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+./diffuser_plan.sh: line 42: 1490857 Killed                  OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py --dataset ${DATASETS[$i]} --logbase logs --diffusion_loadpath "f:diffusion/diffuser_H32_T${n_diffusion_steps}_S0" --value_loadpath "f:values/diffusion_H32_T${n_diffusion_steps}_S0_d0.99" --horizon 32 --n_diffusion_steps ${n_diffusion_steps} --seed $seed --discount 0.99 --prefix 'plans/pen' > output/diffuser_plan_pen/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1
+시드 61에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 62로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+./diffuser_plan.sh: line 42: 1490788 Killed                  OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py --dataset ${DATASETS[$i]} --logbase logs --diffusion_loadpath "f:diffusion/diffuser_H32_T${n_diffusion_steps}_S0" --value_loadpath "f:values/diffusion_H32_T${n_diffusion_steps}_S0_d0.99" --horizon 32 --n_diffusion_steps ${n_diffusion_steps} --seed $seed --discount 0.99 --prefix 'plans/pen' > output/diffuser_plan_pen/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1
+시드 61에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 62로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+./diffuser_plan.sh: line 42: 1490765 Killed                  OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py --dataset ${DATASETS[$i]} --logbase logs --diffusion_loadpath "f:diffusion/diffuser_H32_T${n_diffusion_steps}_S0" --value_loadpath "f:values/diffusion_H32_T${n_diffusion_steps}_S0_d0.99" --horizon 32 --n_diffusion_steps ${n_diffusion_steps} --seed $seed --discount 0.99 --prefix 'plans/pen' > output/diffuser_plan_pen/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1
+시드 62에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 63로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+./diffuser_plan.sh: line 42: 1490585 Killed                  OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py --dataset ${DATASETS[$i]} --logbase logs --diffusion_loadpath "f:diffusion/diffuser_H32_T${n_diffusion_steps}_S0" --value_loadpath "f:values/diffusion_H32_T${n_diffusion_steps}_S0_d0.99" --horizon 32 --n_diffusion_steps ${n_diffusion_steps} --seed $seed --discount 0.99 --prefix 'plans/pen' > output/diffuser_plan_pen/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1
+시드 53에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 54로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 63에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 64로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 62에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 63로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 63에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 64로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 62에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 63로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 54에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 55로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 64에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 65로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 63에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 64로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 64에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 65로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 55에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 56로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 63에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 64로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 65에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 66로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 65에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 66로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 64에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 65로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 64에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 65로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 56에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 57로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 66에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 67로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 66에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 67로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 65에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 66로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 57에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 58로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 65에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 66로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 67에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 68로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 67에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 68로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 66에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 67로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 58에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 59로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 66에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 67로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 68에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 69로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 68에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 69로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 59에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 60로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 67에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 68로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 67에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 68로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 69에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 70로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 69에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 70로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 68에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 69로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 60에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 61로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 68에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 69로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 70에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 71로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 70에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 71로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 69에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 70로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 61에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 62로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 69에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 70로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 71에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 72로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 71에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 72로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 70에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 71로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 62에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 63로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 70에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 71로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 72에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 73로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 72에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 73로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 71에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 72로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 63에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 64로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 71에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 72로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 73에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 74로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 64에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 65로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 73에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 74로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 72에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 73로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 72에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 73로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 74에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 75로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 65에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 66로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 74에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 75로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 73에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 74로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 73에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 74로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 75에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 76로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 66에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 67로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 74에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 75로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 75에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 76로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 74에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 75로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 67에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 68로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 76에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 77로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 75에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 76로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 76에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 77로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 75에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 76로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 68에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 69로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 76에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 77로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 77에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 78로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 77에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 78로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 76에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 77로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 69에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 70로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 77에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 78로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 78에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 79로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 78에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 79로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 77에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 78로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 70에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 71로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 78에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 79로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 79에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 80로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 78에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 79로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 79에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 80로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 71에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 72로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 79에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 80로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 80에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 81로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 80에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 81로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 79에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 80로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 72에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 73로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 80에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 81로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 81에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 82로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 81에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 82로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 80에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 81로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 73에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 74로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 81에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 82로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 82에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 83로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 82에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 83로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 81에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 82로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 74에 대한 모든 작업이 완료되었습니다
+GPU 0에서 시드 75로 작업이 시작되었습니다
+GPU 0: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 82에 대한 모든 작업이 완료되었습니다
+GPU 4에서 시드 83로 작업이 시작되었습니다
+GPU 4: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 83에 대한 모든 작업이 완료되었습니다
+GPU 1에서 시드 84로 작업이 시작되었습니다
+GPU 1: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 83에 대한 모든 작업이 완료되었습니다
+GPU 3에서 시드 84로 작업이 시작되었습니다
+GPU 3: pen-cloned-v0 데이터셋 (n_steps=16)
+시드 82에 대한 모든 작업이 완료되었습니다
+GPU 2에서 시드 83로 작업이 시작되었습니다
+GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)

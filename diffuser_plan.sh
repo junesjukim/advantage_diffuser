@@ -2,21 +2,22 @@
 
 # Create output directory if it doesn't exist
 mkdir -p output
-mkdir -p output/diffuser_plan_guideX
+mkdir -p output/diffuser_plan_kit
 
 # 변수 정의
-n_diffusion_steps=2
+n_diffusion_steps=16
 
 # GPU 장치 배열 정의
-declare -a GPU_DEVICES=(7)
+declare -a GPU_DEVICES=(8)
 
 # 데이터셋 배열 정의
 declare -a DATASETS=(
-  "hopper-medium-replay-v2"
+  #pen-cloned-v0"
+  "kitchen-partial-v0"
 )
 
 # Loop over seed values from 0 to 149
-for seed in {75..149}
+for seed in {0..149}
 do
   # 각 GPU에서 작업 실행
   pids=()
@@ -29,8 +30,9 @@ do
       --horizon 32 \
       --n_diffusion_steps ${n_diffusion_steps} \
       --seed $seed \
+      --n_sample_timesteps 16 \
       --discount 0.99 \
-      --prefix 'plans/guideX' > output/diffuser_plan_guideX/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1 &
+      --prefix 'plans/kit' > output/diffuser_plan_kit/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1 &
 
     pids+=($!)
     echo "GPU ${GPU_DEVICES[$i]}에서 시드 $seed로 작업이 시작되었습니다"

@@ -48,6 +48,7 @@ class Parser(Tap):
 
     def parse_args(self, experiment=None):
         args = super().parse_args(known_only=True)
+        print("="*30 + str(args) + "="*30)
         ## if not loading from a config script, skip the result of the setup
         if not hasattr(args, 'config'): return args
         args = self.read_config(args, experiment)

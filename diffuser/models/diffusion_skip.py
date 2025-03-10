@@ -45,6 +45,7 @@ class GaussianDiffusion(nn.Module):
     def __init__(self, model, horizon, observation_dim, action_dim, n_timesteps=1000,
         loss_type='l1', clip_denoised=False, predict_epsilon=True,
         action_weight=1.0, loss_discount=1.0, loss_weights=None,
+        n_sample_timesteps=None,
     ):
         super().__init__()
         #check for correct module installation, import
@@ -56,119 +57,62 @@ class GaussianDiffusion(nn.Module):
         self.transition_dim = observation_dim + action_dim
         self.model = model
 
+        # 원래 타임스텝 수 저장 (나중에 참조용)
         self._original_n_timesteps = int(n_timesteps)
-        self.setup_diffusion_parameters(n_timesteps)
+        
+        # n_sample_timesteps 처리
+        if n_sample_timesteps is None:
+            # 설정되지 않은 경우 n_timesteps와 동일하게 설정
+            self.n_sample_timesteps = self._original_n_timesteps
+        else:
+            self.n_sample_timesteps = int(n_sample_timesteps)
+        
+        self._original_n_sample_timesteps = self.n_sample_timesteps
+        
+        # 베타 스케줄 및 관련 파라미터 계산
+        original_betas = cosine_beta_schedule(self._original_n_timesteps)
+        original_alphas = 1. - original_betas
+        
+        # 샘플링에 사용할 타임스텝 수에 맞게 조정
+        skip = self._original_n_timesteps // self.n_sample_timesteps
+        alphas = original_alphas.view(self.n_sample_timesteps, skip).prod(dim=1)
+        betas = 1. - alphas
+        
+        # 누적곱 및 파생 값 계산
+        alphas_cumprod = torch.cumprod(alphas, axis=0)
+        alphas_cumprod_prev = torch.cat([torch.ones(1), alphas_cumprod[:-1]])
+
+        self.n_timesteps = self.n_sample_timesteps  # 실제 사용할 타임스텝 수
+        self.clip_denoised = clip_denoised
+        self.predict_epsilon = predict_epsilon
+
+        self.register_buffer('betas', betas)
+        self.register_buffer('alphas_cumprod', alphas_cumprod)
+        self.register_buffer('alphas_cumprod_prev', alphas_cumprod_prev)
+
+        # calculations for diffusion q(x_t | x_{t-1}) and others
+        self.register_buffer('sqrt_alphas_cumprod', torch.sqrt(alphas_cumprod))
+        self.register_buffer('sqrt_one_minus_alphas_cumprod', torch.sqrt(1. - alphas_cumprod))
+        self.register_buffer('log_one_minus_alphas_cumprod', torch.log(1. - alphas_cumprod))
+        self.register_buffer('sqrt_recip_alphas_cumprod', torch.sqrt(1. / alphas_cumprod))
+        self.register_buffer('sqrt_recipm1_alphas_cumprod', torch.sqrt(1. / alphas_cumprod - 1))
+
+        # calculations for posterior q(x_{t-1} | x_t, x_0)
+        posterior_variance = betas * (1. - alphas_cumprod_prev) / (1. - alphas_cumprod)
+        self.register_buffer('posterior_variance', posterior_variance)
+
+        ## log calculation clipped because the posterior variance
+        ## is 0 at the beginning of the diffusion chain
+        self.register_buffer('posterior_log_variance_clipped',
+            torch.log(torch.clamp(posterior_variance, min=1e-20)))
+        self.register_buffer('posterior_mean_coef1',
+            betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod))
+        self.register_buffer('posterior_mean_coef2',
+            (1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod))
 
         ## get loss coefficients and initialize objective
         loss_weights = self.get_loss_weights(action_weight, loss_discount, loss_weights)
         self.loss_fn = Losses[loss_type](loss_weights, self.action_dim)
-
-    def setup_diffusion_parameters(self, n_timesteps):
-        """
-        Sets up diffusion parameters based on the number of timesteps
-        """
-        betas = cosine_beta_schedule(n_timesteps)
-        alphas = 1. - betas
-        alphas_cumprod = torch.cumprod(alphas, axis=0)
-        alphas_cumprod_prev = torch.cat([torch.ones(1), alphas_cumprod[:-1]])
-
-        self.n_timesteps = int(n_timesteps)
-        self.clip_denoised = getattr(self, 'clip_denoised', True)
-        self.predict_epsilon = getattr(self, 'predict_epsilon', True)
-
-        # Register or update buffer
-        if not hasattr(self, 'betas'):
-            self.register_buffer('betas', betas)
-        else:
-            self.betas = betas.to(self.betas.device)
-            
-        if not hasattr(self, 'alphas_cumprod'):
-            self.register_buffer('alphas_cumprod', alphas_cumprod)
-        else:
-            self.alphas_cumprod = alphas_cumprod.to(self.alphas_cumprod.device)
-            
-        if not hasattr(self, 'alphas_cumprod_prev'):
-            self.register_buffer('alphas_cumprod_prev', alphas_cumprod_prev)
-        else:
-            self.alphas_cumprod_prev = alphas_cumprod_prev.to(self.alphas_cumprod_prev.device)
-
-        # Calculations for diffusion q(x_t | x_{t-1}) and others
-        if not hasattr(self, 'sqrt_alphas_cumprod'):
-            self.register_buffer('sqrt_alphas_cumprod', torch.sqrt(alphas_cumprod))
-        else:
-            self.sqrt_alphas_cumprod = torch.sqrt(alphas_cumprod).to(self.sqrt_alphas_cumprod.device)
-            
-        if not hasattr(self, 'sqrt_one_minus_alphas_cumprod'):
-            self.register_buffer('sqrt_one_minus_alphas_cumprod', torch.sqrt(1. - alphas_cumprod))
-        else:
-            self.sqrt_one_minus_alphas_cumprod = torch.sqrt(1. - alphas_cumprod).to(self.sqrt_one_minus_alphas_cumprod.device)
-            
-        if not hasattr(self, 'log_one_minus_alphas_cumprod'):
-            self.register_buffer('log_one_minus_alphas_cumprod', torch.log(1. - alphas_cumprod))
-        else:
-            self.log_one_minus_alphas_cumprod = torch.log(1. - alphas_cumprod).to(self.log_one_minus_alphas_cumprod.device)
-            
-        if not hasattr(self, 'sqrt_recip_alphas_cumprod'):
-            self.register_buffer('sqrt_recip_alphas_cumprod', torch.sqrt(1. / alphas_cumprod))
-        else:
-            self.sqrt_recip_alphas_cumprod = torch.sqrt(1. / alphas_cumprod).to(self.sqrt_recip_alphas_cumprod.device)
-            
-        if not hasattr(self, 'sqrt_recipm1_alphas_cumprod'):
-            self.register_buffer('sqrt_recipm1_alphas_cumprod', torch.sqrt(1. / alphas_cumprod - 1))
-        else:
-            self.sqrt_recipm1_alphas_cumprod = torch.sqrt(1. / alphas_cumprod - 1).to(self.sqrt_recipm1_alphas_cumprod.device)
-
-        # Calculations for posterior q(x_{t-1} | x_t, x_0)
-        posterior_variance = betas * (1. - alphas_cumprod_prev) / (1. - alphas_cumprod)
-        
-        if not hasattr(self, 'posterior_variance'):
-            self.register_buffer('posterior_variance', posterior_variance)
-        else:
-            self.posterior_variance = posterior_variance.to(self.posterior_variance.device)
-            
-        if not hasattr(self, 'posterior_log_variance_clipped'):
-            self.register_buffer('posterior_log_variance_clipped',
-                torch.log(torch.clamp(posterior_variance, min=1e-20)))
-        else:
-            self.posterior_log_variance_clipped = torch.log(torch.clamp(posterior_variance, min=1e-20)).to(self.posterior_log_variance_clipped.device)
-            
-        if not hasattr(self, 'posterior_mean_coef1'):
-            self.register_buffer('posterior_mean_coef1',
-                betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod))
-        else:
-            self.posterior_mean_coef1 = (betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod)).to(self.posterior_mean_coef1.device)
-            
-        if not hasattr(self, 'posterior_mean_coef2'):
-            self.register_buffer('posterior_mean_coef2',
-                (1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod))
-        else:
-            self.posterior_mean_coef2 = ((1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod)).to(self.posterior_mean_coef2.device)
-            
-    def adjust_diffusion_steps(self, n_steps):
-        """
-        Adjusts the diffusion model to use a different number of timesteps than what it was trained with.
-        This allows planning with various levels of diffusion steps.
-        
-        Args:
-            n_steps: The new number of diffusion steps to use
-        """
-        print(f"Adjusting diffusion steps from {self.n_timesteps} to {n_steps}")
-        
-        # Store the current timesteps for potential reset
-        self._current_steps = n_steps
-        
-        if n_steps == self.n_timesteps:
-            return  # No change needed
-            
-        # Calculate new diffusion parameters
-        self.setup_diffusion_parameters(n_steps)
-        
-    def reset_diffusion_steps(self):
-        """
-        Resets the diffusion model to use the original number of timesteps it was trained with.
-        """
-        if hasattr(self, '_original_n_timesteps'):
-            self.adjust_diffusion_steps(self._original_n_timesteps)
 
     def get_loss_weights(self, action_weight, discount, weights_dict):
         '''
@@ -310,6 +254,59 @@ class GaussianDiffusion(nn.Module):
 
     def forward(self, cond, *args, **kwargs):
         return self.conditional_sample(cond, *args, **kwargs)
+
+    def adjust_diffusion_steps(self, n_steps):
+        """
+        타임스텝 수를 동적으로 조정하는 메소드
+        Args:
+            n_steps: 새로운 타임스텝 수
+        """
+        if n_steps == self.n_sample_timesteps:
+            # 이미 같은 타임스텝 수를 사용 중이면 변경 없음
+            return
+        
+        print(f"Adjusting diffusion steps from {self.n_sample_timesteps} to {n_steps}")
+        
+        # 새 타임스텝 수 저장
+        self.n_sample_timesteps = n_steps
+        
+        # 베타 스케줄 및 관련 파라미터 재계산
+        original_betas = cosine_beta_schedule(self._original_n_timesteps)
+        original_alphas = 1. - original_betas
+        
+        # 새 타임스텝에 맞게 조정
+        skip = self._original_n_timesteps // n_steps
+        alphas = original_alphas.view(n_steps, skip).prod(dim=1)
+        betas = 1. - alphas
+        
+        # 누적곱 및 파생 값 재계산
+        alphas_cumprod = torch.cumprod(alphas, axis=0)
+        alphas_cumprod_prev = torch.cat([torch.ones(1), alphas_cumprod[:-1]])
+        
+        # 버퍼 업데이트
+        device = self.betas.device
+        self.betas = betas.to(device)
+        self.alphas_cumprod = alphas_cumprod.to(device)
+        self.alphas_cumprod_prev = alphas_cumprod_prev.to(device)
+        
+        self.sqrt_alphas_cumprod = torch.sqrt(alphas_cumprod).to(device)
+        self.sqrt_one_minus_alphas_cumprod = torch.sqrt(1. - alphas_cumprod).to(device)
+        self.log_one_minus_alphas_cumprod = torch.log(1. - alphas_cumprod).to(device)
+        self.sqrt_recip_alphas_cumprod = torch.sqrt(1. / alphas_cumprod).to(device)
+        self.sqrt_recipm1_alphas_cumprod = torch.sqrt(1. / alphas_cumprod - 1).to(device)
+        
+        # posterior 관련 값 재계산
+        posterior_variance = betas * (1. - alphas_cumprod_prev) / (1. - alphas_cumprod)
+        self.posterior_variance = posterior_variance.to(device)
+        self.posterior_log_variance_clipped = torch.log(torch.clamp(posterior_variance, min=1e-20)).to(device)
+        self.posterior_mean_coef1 = (betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod)).to(device)
+        self.posterior_mean_coef2 = ((1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod)).to(device)
+        
+    def reset_diffusion_steps(self):
+        """
+        원래 타임스텝 수로 복원하는 메소드
+        """
+        self.adjust_diffusion_steps(self._original_n_sample_timesteps)
 
 
 class ValueDiffusion(GaussianDiffusion):

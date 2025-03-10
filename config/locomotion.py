@@ -14,6 +14,8 @@ args_to_watch = [
     ('seed', 'S'),
     ## value kwargs
     ('discount', 'd'),
+    ## planning kwargs
+    ('n_sample_timesteps', 'ST'),   
 ]
 
 logbase = 'logs'
@@ -121,6 +123,7 @@ base = {
         'scale': 0.1,
         't_stopgrad': 2,
         'scale_grad_by_std': True,
+        'n_sample_timesteps': None,
 
         ## serialization
         'loadbase': None,
@@ -133,6 +136,7 @@ base = {
         ## diffusion model
         'horizon': 32,
         'n_diffusion_steps': 20,
+        
 
         ## value function
         'discount': 0.997,

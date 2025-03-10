@@ -45,6 +45,7 @@ class GaussianDiffusion(nn.Module):
     def __init__(self, model, horizon, observation_dim, action_dim, n_timesteps=1000,
         loss_type='l1', clip_denoised=False, predict_epsilon=True,
         action_weight=1.0, loss_discount=1.0, loss_weights=None,
+        n_sample_timesteps=1
     ):
         super().__init__()
         #check for correct module installation, import
@@ -60,14 +61,13 @@ class GaussianDiffusion(nn.Module):
         alphas = 1. - betas
         alphas_cumprod = torch.cumprod(alphas, axis=0)
         alphas_cumprod_prev = torch.cat([torch.ones(1), alphas_cumprod[:-1]])
-
-        self.n_timesteps = int(n_timesteps)
+        self.n_timesteps = int(n_timesteps)     
         self.clip_denoised = clip_denoised
         self.predict_epsilon = predict_epsilon
 
         self.register_buffer('betas', betas)
         self.register_buffer('alphas_cumprod', alphas_cumprod)
-        self.register_buffer('alphas_cumprod_prev', alphas_cumprod_prev)#수정해야함!!!
+        self.register_buffer('alphas_cumprod_prev', alphas_cumprod_prev)
 
         # calculations for diffusion q(x_t | x_{t-1}) and others
         self.register_buffer('sqrt_alphas_cumprod', torch.sqrt(alphas_cumprod))
@@ -92,6 +92,52 @@ class GaussianDiffusion(nn.Module):
         ## get loss coefficients and initialize objective
         loss_weights = self.get_loss_weights(action_weight, loss_discount, loss_weights)
         self.loss_fn = Losses[loss_type](loss_weights, self.action_dim)
+
+        self.n_sample_timesteps = n_sample_timesteps
+
+        # n_sample_timesteps 처리
+        sample_alphas = alphas.view(self.n_sample_timesteps, -1).prod(dim=1)
+        sample_betas = 1. - sample_alphas
+        
+        # 누적곱 및 파생 값 계산
+        sample_alphas_cumprod = torch.cumprod(sample_alphas, axis=0)
+        sample_alphas_cumprod_prev = torch.cat([torch.ones(1), sample_alphas_cumprod[:-1]])
+
+        self.sample_betas = sample_betas
+        self.sample_alphas_cumprod = sample_alphas_cumprod
+        self.sample_alphas_cumprod_prev = sample_alphas_cumprod_prev
+
+        # calculations for diffusion q(x_t | x_{t-1}) and others
+        self.sample_sqrt_alphas_cumprod = torch.sqrt(sample_alphas_cumprod)
+        self.sample_sqrt_one_minus_alphas_cumprod = torch.sqrt(1. - sample_alphas_cumprod)
+        self.sample_log_one_minus_alphas_cumprod = torch.log(1. - sample_alphas_cumprod)
+        self.sample_sqrt_recip_alphas_cumprod = torch.sqrt(1. / sample_alphas_cumprod)
+        self.sample_sqrt_recipm1_alphas_cumprod = torch.sqrt(1. / sample_alphas_cumprod - 1)
+
+        # calculations for posterior q(x_{t-1} | x_t, x_0)
+        sample_posterior_variance = sample_betas * (1. - sample_alphas_cumprod_prev) / (1. - sample_alphas_cumprod)
+        self.sample_posterior_variance = sample_posterior_variance
+
+        ## log calculation clipped because the posterior variance
+        ## is 0 at the beginning of the diffusion chain
+        self.sample_posterior_log_variance_clipped = torch.log(torch.clamp(sample_posterior_variance, min=1e-20))
+        self.sample_posterior_mean_coef1 = sample_betas * np.sqrt(sample_alphas_cumprod_prev) / (1. - sample_alphas_cumprod)
+        self.sample_posterior_mean_coef2 = (1. - sample_alphas_cumprod_prev) * np.sqrt(sample_alphas) / (1. - sample_alphas_cumprod)
+
+        self.device = self.betas.device
+        print(f"self.device: {self.device}")
+        self.sample_betas = self.sample_betas.to(self.device)
+        self.sample_alphas_cumprod = self.sample_alphas_cumprod.to(self.device)
+        self.sample_alphas_cumprod_prev = self.sample_alphas_cumprod_prev.to(self.device)
+        self.sample_sqrt_alphas_cumprod = self.sample_sqrt_alphas_cumprod.to(self.device)
+        self.sample_sqrt_one_minus_alphas_cumprod = self.sample_sqrt_one_minus_alphas_cumprod.to(self.device)
+        self.sample_log_one_minus_alphas_cumprod = self.sample_log_one_minus_alphas_cumprod.to(self.device)
+        self.sample_sqrt_recip_alphas_cumprod = self.sample_sqrt_recip_alphas_cumprod.to(self.device)
+        self.sample_sqrt_recipm1_alphas_cumprod = self.sample_sqrt_recipm1_alphas_cumprod.to(self.device)
+        self.sample_posterior_variance = self.sample_posterior_variance.to(self.device)
+        self.sample_posterior_log_variance_clipped = self.sample_posterior_log_variance_clipped.to(self.device)
+        self.sample_posterior_mean_coef1 = self.sample_posterior_mean_coef1.to(self.device)
+        self.sample_posterior_mean_coef2 = self.sample_posterior_mean_coef2.to(self.device)
 
     def get_loss_weights(self, action_weight, discount, weights_dict):
         '''
@@ -129,21 +175,37 @@ class GaussianDiffusion(nn.Module):
             if self.predict_epsilon, model output is (scaled) noise;
             otherwise, model predicts x0 directly
         '''
+        current_device = x_t.device
+        
+        # 필요한 텐서들을 현재 디바이스로 이동
+        sample_sqrt_recip_alphas_cumprod = self.sample_sqrt_recip_alphas_cumprod.to(current_device)
+        sample_sqrt_recipm1_alphas_cumprod = self.sample_sqrt_recipm1_alphas_cumprod.to(current_device)
+        
         if self.predict_epsilon:
             return (
-                extract(self.sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t -
-                extract(self.sqrt_recipm1_alphas_cumprod, t, x_t.shape) * noise
+                extract(sample_sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t -
+                extract(sample_sqrt_recipm1_alphas_cumprod, t, x_t.shape) * noise
             )
         else:
             return noise
 
     def q_posterior(self, x_start, x_t, t):
+
+        # 현재 텐서의 디바이스 확인
+        current_device = x_t.device
+        
+        # 필요한 텐서들을 현재 디바이스로 이동
+        sample_posterior_mean_coef1 = self.sample_posterior_mean_coef1.to(current_device)
+        sample_posterior_mean_coef2 = self.sample_posterior_mean_coef2.to(current_device)
+        sample_posterior_variance = self.sample_posterior_variance.to(current_device)
+        sample_posterior_log_variance_clipped = self.sample_posterior_log_variance_clipped.to(current_device)
+        
         posterior_mean = (
-            extract(self.posterior_mean_coef1, t, x_t.shape) * x_start +
-            extract(self.posterior_mean_coef2, t, x_t.shape) * x_t
+            extract(sample_posterior_mean_coef1, t, x_t.shape) * x_start +
+            extract(sample_posterior_mean_coef2, t, x_t.shape) * x_t
         )
-        posterior_variance = extract(self.posterior_variance, t, x_t.shape)
-        posterior_log_variance_clipped = extract(self.posterior_log_variance_clipped, t, x_t.shape)
+        posterior_variance = extract(sample_posterior_variance, t, x_t.shape)
+        posterior_log_variance_clipped = extract(sample_posterior_log_variance_clipped, t, x_t.shape)
         return posterior_mean, posterior_variance, posterior_log_variance_clipped
 
     def p_mean_variance(self, x, cond, t):
@@ -168,8 +230,8 @@ class GaussianDiffusion(nn.Module):
 
         chain = [x] if return_chain else None
 
-        progress = utils.Progress(self.n_timesteps) if verbose else utils.Silent()
-        for i in reversed(range(0, self.n_timesteps)):
+        progress = utils.Progress(self.n_sample_timesteps) if verbose else utils.Silent()
+        for i in reversed(range(0, self.n_sample_timesteps)):
             t = make_timesteps(batch_size, i, device)
             x, values = sample_fn(self, x, cond, t, **sample_kwargs)
             x = apply_conditioning(x, cond, self.action_dim)
