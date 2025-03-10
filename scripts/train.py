@@ -1,4 +1,5 @@
 import diffuser.utils as utils
+from diffuser.models.diffusion import set_model_mode
 
 
 #-----------------------------------------------------------------------------#
@@ -20,6 +21,8 @@ class Parser(utils.Parser):
 
 args = Parser().parse_args('diffusion')
 
+# 초기 설정에서 모델 모드 설정
+set_model_mode(args.prefix)
 
 #-----------------------------------------------------------------------------#
 #---------------------------------- dataset ----------------------------------#

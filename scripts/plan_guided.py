@@ -4,6 +4,8 @@ import diffuser.sampling as sampling
 import diffuser.utils as utils
 import torch
 
+from diffuser.models.diffusion import set_model_mode
+
 
 #-----------------------------------------------------------------------------#
 #-------------------------- conda env test -----------------------------------#
@@ -25,6 +27,8 @@ class Parser(utils.Parser):
 
 args = Parser().parse_args('plan')
 
+# 모델 모드 설정
+set_model_mode(args.prefix)
 
 
 #-----------------------------------------------------------------------------#

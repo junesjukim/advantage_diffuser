@@ -38,8 +38,67 @@ def sort_by_values(x, values):
 
 def make_timesteps(batch_size, i, device):
     t = torch.full((batch_size,), i, device=device, dtype=torch.long)
-    return t
+    return t# diffuser/models/diffusion.py (통합 버전)
+from collections import namedtuple
+import numpy as np
+import torch
+from torch import nn
+import pdb
 
+import diffuser.utils as utils
+from .helpers import (
+    cosine_beta_schedule,
+    extract,
+    apply_conditioning,
+    Losses,
+)
+
+Sample = namedtuple('Sample', 'trajectories values chains')
+
+# 모델 타입 선택을 위한 글로벌 변수
+FLOWMATCHING_MODE = False
+
+def set_model_mode(prefix):
+    """
+    모델 모드를 설정하는 함수
+    train.py, plan_guided.py 등에서 호출하여 전역 모드 설정
+    """
+    global FLOWMATCHING_MODE
+    FLOWMATCHING_MODE = prefix.startswith('flowmatching')
+    print(f"모델 모드 설정: {'Flowmatching' if FLOWMATCHING_MODE else 'Diffusion'}")
+    return FLOWMATCHING_MODE
+
+@torch.no_grad()
+def default_sample_fn(model, x, cond, t):
+    """
+    통합된 샘플링 함수로, 전역 모드에 따라 다른 샘플링 방식 사용
+    """
+    if FLOWMATCHING_MODE:
+        # flowmatching 방식
+        x_less_noisy = model.p_mean_variance(x=x, cond=cond, t=t)
+        values = torch.zeros(len(x), device=x.device)
+        return x_less_noisy, values
+    else:
+        # 기존 diffusion 방식
+        model_mean, _, model_log_variance = model.p_mean_variance(x=x, cond=cond, t=t)
+        model_std = torch.exp(0.5 * model_log_variance)
+
+        # no noise when t == 0
+        noise = torch.randn_like(x)
+        noise[t == 0] = 0
+
+        values = torch.zeros(len(x), device=x.device)
+        return model_mean + model_std * noise, values
+
+def sort_by_values(x, values):
+    inds = torch.argsort(values, descending=True)
+    x = x[inds]
+    values = values[inds]
+    return x, values
+
+def make_timesteps(batch_size, i, device):
+    t = torch.full((batch_size,), i, device=device, dtype=torch.long)
+    return t
 
 class GaussianDiffusion(nn.Module):
     def __init__(self, model, horizon, observation_dim, action_dim, n_timesteps=1000,
@@ -48,177 +107,258 @@ class GaussianDiffusion(nn.Module):
         n_sample_timesteps=1
     ):
         super().__init__()
-        #check for correct module installation, import
-        print("imported diffusion.py for diffusion")
         
+        # 현재 모드 출력 (디버깅용)
+        if FLOWMATCHING_MODE:
+            print("imported diffusion.py for flowmatching")
+        else:
+            print("imported diffusion.py for diffusion")
+            
+        self.model = model
         self.horizon = horizon
         self.observation_dim = observation_dim
         self.action_dim = action_dim
         self.transition_dim = observation_dim + action_dim
-        self.model = model
-
-        betas = cosine_beta_schedule(n_timesteps)
-        alphas = 1. - betas
-        alphas_cumprod = torch.cumprod(alphas, axis=0)
-        alphas_cumprod_prev = torch.cat([torch.ones(1), alphas_cumprod[:-1]])
-        self.n_timesteps = int(n_timesteps)     
+        self.n_timesteps = n_timesteps
+        self.n_sample_timesteps = n_sample_timesteps
         self.clip_denoised = clip_denoised
         self.predict_epsilon = predict_epsilon
 
-        self.register_buffer('betas', betas)
-        self.register_buffer('alphas_cumprod', alphas_cumprod)
-        self.register_buffer('alphas_cumprod_prev', alphas_cumprod_prev)
 
-        # calculations for diffusion q(x_t | x_{t-1}) and others
-        self.register_buffer('sqrt_alphas_cumprod', torch.sqrt(alphas_cumprod))
-        self.register_buffer('sqrt_one_minus_alphas_cumprod', torch.sqrt(1. - alphas_cumprod))
-        self.register_buffer('log_one_minus_alphas_cumprod', torch.log(1. - alphas_cumprod))
-        self.register_buffer('sqrt_recip_alphas_cumprod', torch.sqrt(1. / alphas_cumprod))
-        self.register_buffer('sqrt_recipm1_alphas_cumprod', torch.sqrt(1. / alphas_cumprod - 1))
+        # 모델 타입에 따라 초기화 방식 분기
+        if FLOWMATCHING_MODE:
+            # Flowmatching 설정
+            self.register_flowmatching_parameters()
+        else:
+            # 기존 Diffusion 설정
+            self.register_diffusion_parameters()
 
-        # calculations for posterior q(x_{t-1} | x_t, x_0)
-        posterior_variance = betas * (1. - alphas_cumprod_prev) / (1. - alphas_cumprod)
-        self.register_buffer('posterior_variance', posterior_variance)
-
-        ## log calculation clipped because the posterior variance
-        ## is 0 at the beginning of the diffusion chain
-        self.register_buffer('posterior_log_variance_clipped',
-            torch.log(torch.clamp(posterior_variance, min=1e-20)))
-        self.register_buffer('posterior_mean_coef1',
-            betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod))
-        self.register_buffer('posterior_mean_coef2',
-            (1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod))
-
-        ## get loss coefficients and initialize objective
-        loss_weights = self.get_loss_weights(action_weight, loss_discount, loss_weights)
+        # 손실 가중치 설정
+        loss_weights = self.get_loss_weights(
+            action_weight=action_weight,
+            discount=loss_discount,
+            weights_dict=loss_weights,
+        )
         self.loss_fn = Losses[loss_type](loss_weights, self.action_dim)
 
-        self.n_sample_timesteps = n_sample_timesteps
+    def register_diffusion_parameters(self):
+        """기존 diffusion에 필요한 파라미터 등록"""
+        betas = cosine_beta_schedule(self.n_timesteps)
+        alphas = 1 - betas
+        alphas_cumprod = torch.cumprod(alphas, axis=0)
+        alphas_cumprod_prev = torch.cat([torch.ones(1), alphas_cumprod[:-1]])
+        self.betas = betas
 
-        # n_sample_timesteps 처리
-        sample_alphas = alphas.view(self.n_sample_timesteps, -1).prod(dim=1)
-        sample_betas = 1. - sample_alphas
-        
-        # 누적곱 및 파생 값 계산
+        # 계산 효율성을 위한 값들 저장
+        self.sqrt_alphas_cumprod = torch.sqrt(alphas_cumprod)
+        self.sqrt_one_minus_alphas_cumprod = torch.sqrt(1. - alphas_cumprod)
+        self.log_one_minus_alphas_cumprod = torch.log(1. - alphas_cumprod)
+        self.sqrt_recip_alphas_cumprod = torch.sqrt(1. / alphas_cumprod)
+        self.sqrt_recipm1_alphas_cumprod = torch.sqrt(1. / alphas_cumprod - 1)
+
+        # posterior q(x_{t-1} | x_t, x_0) 계산을 위한 값
+        posterior_variance = betas * (1. - alphas_cumprod_prev) / (1. - alphas_cumprod)
+        self.posterior_variance = posterior_variance
+        self.posterior_log_variance_clipped = torch.log(torch.clamp(posterior_variance, min=1e-20))
+        self.posterior_mean_coef1 = betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod)
+        self.posterior_mean_coef2 = (1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod)
+
+        # sampling을 위한 별도 베타값
+        timesteps = torch.linspace(0, self.n_timesteps - 1, self.n_sample_timesteps + 1).long()
+        self.timesteps = timesteps[:-1] # n_sample_timesteps
+
+        sample_betas = betas[timesteps[:-1]]
+        sample_alphas = 1 - sample_betas
         sample_alphas_cumprod = torch.cumprod(sample_alphas, axis=0)
         sample_alphas_cumprod_prev = torch.cat([torch.ones(1), sample_alphas_cumprod[:-1]])
 
         self.sample_betas = sample_betas
         self.sample_alphas_cumprod = sample_alphas_cumprod
         self.sample_alphas_cumprod_prev = sample_alphas_cumprod_prev
-
-        # calculations for diffusion q(x_t | x_{t-1}) and others
+        
         self.sample_sqrt_alphas_cumprod = torch.sqrt(sample_alphas_cumprod)
         self.sample_sqrt_one_minus_alphas_cumprod = torch.sqrt(1. - sample_alphas_cumprod)
         self.sample_log_one_minus_alphas_cumprod = torch.log(1. - sample_alphas_cumprod)
         self.sample_sqrt_recip_alphas_cumprod = torch.sqrt(1. / sample_alphas_cumprod)
         self.sample_sqrt_recipm1_alphas_cumprod = torch.sqrt(1. / sample_alphas_cumprod - 1)
 
-        # calculations for posterior q(x_{t-1} | x_t, x_0)
         sample_posterior_variance = sample_betas * (1. - sample_alphas_cumprod_prev) / (1. - sample_alphas_cumprod)
         self.sample_posterior_variance = sample_posterior_variance
-
-        ## log calculation clipped because the posterior variance
-        ## is 0 at the beginning of the diffusion chain
         self.sample_posterior_log_variance_clipped = torch.log(torch.clamp(sample_posterior_variance, min=1e-20))
         self.sample_posterior_mean_coef1 = sample_betas * np.sqrt(sample_alphas_cumprod_prev) / (1. - sample_alphas_cumprod)
         self.sample_posterior_mean_coef2 = (1. - sample_alphas_cumprod_prev) * np.sqrt(sample_alphas) / (1. - sample_alphas_cumprod)
 
         self.device = self.betas.device
-        print(f"self.device: {self.device}")
-        self.sample_betas = self.sample_betas.to(self.device)
-        self.sample_alphas_cumprod = self.sample_alphas_cumprod.to(self.device)
-        self.sample_alphas_cumprod_prev = self.sample_alphas_cumprod_prev.to(self.device)
-        self.sample_sqrt_alphas_cumprod = self.sample_sqrt_alphas_cumprod.to(self.device)
-        self.sample_sqrt_one_minus_alphas_cumprod = self.sample_sqrt_one_minus_alphas_cumprod.to(self.device)
-        self.sample_log_one_minus_alphas_cumprod = self.sample_log_one_minus_alphas_cumprod.to(self.device)
-        self.sample_sqrt_recip_alphas_cumprod = self.sample_sqrt_recip_alphas_cumprod.to(self.device)
-        self.sample_sqrt_recipm1_alphas_cumprod = self.sample_sqrt_recipm1_alphas_cumprod.to(self.device)
-        self.sample_posterior_variance = self.sample_posterior_variance.to(self.device)
-        self.sample_posterior_log_variance_clipped = self.sample_posterior_log_variance_clipped.to(self.device)
-        self.sample_posterior_mean_coef1 = self.sample_posterior_mean_coef1.to(self.device)
-        self.sample_posterior_mean_coef2 = self.sample_posterior_mean_coef2.to(self.device)
+
+    def register_flowmatching_parameters(self):
+        """flowmatching에 필요한 파라미터 등록"""
+        # flowmatching에는 최소한의 매개변수만 필요
+        print("register_flowmatching_parameters")
+        betas = torch.ones(self.n_timesteps)  # 단순화된 파라미터
+        self.betas = betas
+        self.device = self.betas.device
+        self.theta_min = 0.0
 
     def get_loss_weights(self, action_weight, discount, weights_dict):
-        '''
-            sets loss coefficients for trajectory
-
-            action_weight   : float
-                coefficient on first action loss
-            discount   : float
-                multiplies t^th timestep of trajectory loss by discount**t
-            weights_dict    : dict
-                { i: c } multiplies dimension i of observation loss by c
-        '''
+        """
+        손실 가중치 설정 - 두 모델 타입 모두 사용하는 공통 메서드
+        """
         self.action_weight = action_weight
 
         dim_weights = torch.ones(self.transition_dim, dtype=torch.float32)
 
-        ## set loss coefficients for dimensions of observation
+        # 관측값 손실의 차원 별 가중치 설정
         if weights_dict is None: weights_dict = {}
         for ind, w in weights_dict.items():
             dim_weights[self.action_dim + ind] *= w
 
-        ## decay loss with trajectory timestep: discount**t
+        # 시간에 따른 손실 감쇠: discount**t
         discounts = discount ** torch.arange(self.horizon, dtype=torch.float)
         discounts = discounts / discounts.mean()
         loss_weights = torch.einsum('h,t->ht', discounts, dim_weights)
 
-        ## manually set a0 weight
+        # 첫 행동의 가중치 수동 설정
         loss_weights[0, :self.action_dim] = action_weight
         return loss_weights
 
-    #------------------------------------------ sampling ------------------------------------------#
-
     def predict_start_from_noise(self, x_t, t, noise):
-        '''
-            if self.predict_epsilon, model output is (scaled) noise;
-            otherwise, model predicts x0 directly
-        '''
+        """
+        noise에서 x_0 예측 (diffusion 모델용)
+        """
+        # 현재 텐서의 디바이스 확인
         current_device = x_t.device
         
         # 필요한 텐서들을 현재 디바이스로 이동
-        sample_sqrt_recip_alphas_cumprod = self.sample_sqrt_recip_alphas_cumprod.to(current_device)
-        sample_sqrt_recipm1_alphas_cumprod = self.sample_sqrt_recipm1_alphas_cumprod.to(current_device)
+        sqrt_recip_alphas_cumprod = self.sqrt_recip_alphas_cumprod.to(current_device) 
+        sqrt_recipm1_alphas_cumprod = self.sqrt_recipm1_alphas_cumprod.to(current_device)
         
         if self.predict_epsilon:
             return (
-                extract(sample_sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t -
-                extract(sample_sqrt_recipm1_alphas_cumprod, t, x_t.shape) * noise
+                extract(sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t -
+                extract(sqrt_recipm1_alphas_cumprod, t, x_t.shape) * noise
             )
         else:
             return noise
 
     def q_posterior(self, x_start, x_t, t):
-
+        """
+        posterior q(x_{t-1} | x_t, x_0) 계산 (diffusion 모델용)
+        """
         # 현재 텐서의 디바이스 확인
         current_device = x_t.device
         
         # 필요한 텐서들을 현재 디바이스로 이동
-        sample_posterior_mean_coef1 = self.sample_posterior_mean_coef1.to(current_device)
-        sample_posterior_mean_coef2 = self.sample_posterior_mean_coef2.to(current_device)
-        sample_posterior_variance = self.sample_posterior_variance.to(current_device)
-        sample_posterior_log_variance_clipped = self.sample_posterior_log_variance_clipped.to(current_device)
+        posterior_mean_coef1 = self.posterior_mean_coef1.to(current_device)
+        posterior_mean_coef2 = self.posterior_mean_coef2.to(current_device)
+        posterior_variance = self.posterior_variance.to(current_device)
+        posterior_log_variance_clipped = self.posterior_log_variance_clipped.to(current_device)
         
         posterior_mean = (
-            extract(sample_posterior_mean_coef1, t, x_t.shape) * x_start +
-            extract(sample_posterior_mean_coef2, t, x_t.shape) * x_t
+            extract(posterior_mean_coef1, t, x_t.shape) * x_start +
+            extract(posterior_mean_coef2, t, x_t.shape) * x_t
         )
-        posterior_variance = extract(sample_posterior_variance, t, x_t.shape)
-        posterior_log_variance_clipped = extract(sample_posterior_log_variance_clipped, t, x_t.shape)
+        posterior_variance = extract(posterior_variance, t, x_t.shape)
+        posterior_log_variance_clipped = extract(posterior_log_variance_clipped, t, x_t.shape)
         return posterior_mean, posterior_variance, posterior_log_variance_clipped
 
     def p_mean_variance(self, x, cond, t):
-        x_recon = self.predict_start_from_noise(x, t=t, noise=self.model(x, cond, t))
-
-        if self.clip_denoised:
-            x_recon.clamp_(-1., 1.)
+        """
+        예측 평균 및 분산 계산
+        모델 타입에 따라 다른 구현 사용
+        """
+        if FLOWMATCHING_MODE:
+            # flowmatching 방식의 구현
+            print( "FLOWMATCHING MODE :::: " +  str(FLOWMATCHING_MODE))
+            model_output = self.model(x, cond, t)
+            
+            if self.predict_epsilon:
+                # velocity를 예측하는 방식
+                x_less_noisy = x + model_output * (1.0/self.n_timesteps)
+            else:
+                # x_start를 직접 예측하는 방식
+                x_less_noisy = model_output
+                
+            x_less_noisy = apply_conditioning(x_less_noisy, cond, self.action_dim)
+            return x_less_noisy
         else:
-            assert RuntimeError()
+            # 기존 diffusion 방식의 구현
+            x_recon = self.predict_start_from_noise(x, t=t, noise=self.model(x, cond, t))
 
-        model_mean, posterior_variance, posterior_log_variance = self.q_posterior(
-                x_start=x_recon, x_t=x, t=t)
-        return model_mean, posterior_variance, posterior_log_variance
+            if self.clip_denoised:
+                x_recon.clamp_(-1., 1.)
+
+            model_mean, posterior_variance, posterior_log_variance = self.q_posterior(
+                    x_start=x_recon, x_t=x, t=t)
+            return model_mean, posterior_variance, posterior_log_variance
+
+    def q_sample(self, x_start, t, noise=None):
+        """
+        노이즈 추가 샘플링
+        모델 타입에 따라 다른 구현 사용
+        """
+        if noise is None:
+            noise = torch.randn_like(x_start)
+        
+        if FLOWMATCHING_MODE:
+            # flowmatching 방식의 구현
+            theta_min = self.theta_min
+            t_normalized = t / self.n_timesteps
+            t_normalized = t_normalized.view(-1, 1, 1)
+            return (1 - (1 - theta_min) * t_normalized) * noise + t_normalized * x_start
+        else:
+            # 기존 diffusion 방식의 구현
+            current_device = x_start.device
+            sqrt_alphas_cumprod = self.sqrt_alphas_cumprod.to(current_device)
+            sqrt_one_minus_alphas_cumprod = self.sqrt_one_minus_alphas_cumprod.to(current_device)
+            
+            sample = (
+                extract(sqrt_alphas_cumprod, t, x_start.shape) * x_start +
+                extract(sqrt_one_minus_alphas_cumprod, t, x_start.shape) * noise
+            )
+            return sample
+
+    def p_losses(self, x_start, cond, t):
+        """
+        손실 계산
+        모델 타입에 따라 다른 구현 사용
+        """
+        noise = torch.randn_like(x_start)
+        
+        if FLOWMATCHING_MODE:
+            # flowmatching 방식의 손실 계산
+            x_noisy = self.q_sample(x_start=x_start, t=t, noise=noise)
+            x_noisy = apply_conditioning(x_noisy, cond, self.action_dim)
+
+            v_t_predict = self.model(x_noisy, cond, t)
+            v_t_predict = apply_conditioning(v_t_predict, cond, self.action_dim)
+            
+            theta_min = self.theta_min
+            v_t_true = x_start - (1 - theta_min) * noise
+            v_t_true = apply_conditioning(v_t_true, cond, self.action_dim)
+
+            assert v_t_true.shape == v_t_predict.shape
+            loss, info = self.loss_fn(v_t_predict, v_t_true)
+        else:
+            # 기존 diffusion 방식의 손실 계산
+            x_t = self.q_sample(x_start=x_start, t=t, noise=noise)
+            x_t = apply_conditioning(x_t, cond, self.action_dim)
+
+            if self.predict_epsilon:
+                target = noise
+            else:
+                target = x_start
+
+            model_output = self.model(x_t, cond, t)
+            model_output = apply_conditioning(model_output, cond, self.action_dim)
+
+            loss, info = self.loss_fn(model_output, target)
+        
+        return loss, info
+
+    def loss(self, x, *args):
+        batch_size = len(x)
+        t = torch.randint(0, self.n_timesteps, (batch_size,), device=x.device).long()
+        return self.p_losses(x, *args, t)
 
     @torch.no_grad()
     def p_sample_loop(self, shape, cond, verbose=True, return_chain=False, sample_fn=default_sample_fn, **sample_kwargs):
@@ -230,8 +370,18 @@ class GaussianDiffusion(nn.Module):
 
         chain = [x] if return_chain else None
 
-        progress = utils.Progress(self.n_sample_timesteps) if verbose else utils.Silent()
-        for i in reversed(range(0, self.n_sample_timesteps)):
+        if FLOWMATCHING_MODE:
+            # Flowmatching: 순방향 샘플링 (0→T)
+            n_steps = self.n_sample_timesteps
+            timesteps = range(0, n_steps)
+        else:
+            # Diffusion: 역방향 샘플링 (T→0)
+            n_steps = self.n_sample_timesteps
+            timesteps = reversed(range(0, n_steps))
+
+        progress = utils.Progress(n_steps) if verbose else utils.Silent()
+        
+        for i in timesteps:
             t = make_timesteps(batch_size, i, device)
             x, values = sample_fn(self, x, cond, t, **sample_kwargs)
             x = apply_conditioning(x, cond, self.action_dim)
@@ -257,48 +407,14 @@ class GaussianDiffusion(nn.Module):
 
         return self.p_sample_loop(shape, cond, **sample_kwargs)
 
-    #------------------------------------------ training ------------------------------------------#
-
-    def q_sample(self, x_start, t, noise=None):
-        if noise is None:
-            noise = torch.randn_like(x_start)
-
-        sample = (
-            extract(self.sqrt_alphas_cumprod, t, x_start.shape) * x_start +
-            extract(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape) * noise
-        )
-
-        return sample
-
-    def p_losses(self, x_start, cond, t):
-        noise = torch.randn_like(x_start)
-
-        x_noisy = self.q_sample(x_start=x_start, t=t, noise=noise)
-        x_noisy = apply_conditioning(x_noisy, cond, self.action_dim)
-
-        x_recon = self.model(x_noisy, cond, t)
-        x_recon = apply_conditioning(x_recon, cond, self.action_dim)
-
-        assert noise.shape == x_recon.shape
-
-        if self.predict_epsilon:
-            loss, info = self.loss_fn(x_recon, noise)
-        else:
-            loss, info = self.loss_fn(x_recon, x_start)
-
-        return loss, info
-
-    def loss(self, x, *args):
-        batch_size = len(x)
-        t = torch.randint(0, self.n_timesteps, (batch_size,), device=x.device).long()
-        return self.p_losses(x, *args, t)
-
     def forward(self, cond, *args, **kwargs):
         return self.conditional_sample(cond, *args, **kwargs)
 
 
 class ValueDiffusion(GaussianDiffusion):
-
+    """
+    가치 함수용 diffusion 모델
+    """
     def p_losses(self, x_start, cond, target, t):
         noise = torch.randn_like(x_start)
 
@@ -312,4 +428,4 @@ class ValueDiffusion(GaussianDiffusion):
 
     def forward(self, x, cond, t):
         return self.model(x, cond, t)
-
+# diffuser/models/diffusion.py (통합 버전)

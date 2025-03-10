@@ -1,7 +1,7 @@
 import diffuser.utils as utils
 import pdb
 
-
+from diffuser.models.diffusion import set_model_mode
 #-----------------------------------------------------------------------------#
 #-------------------------- conda env test -----------------------------------#
 #-----------------------------------------------------------------------------#
@@ -20,7 +20,7 @@ class Parser(utils.Parser):
     config: str = 'config.locomotion'
 
 args = Parser().parse_args('values')
-
+set_model_mode(args.prefix)
 
 #-----------------------------------------------------------------------------#
 #---------------------------------- dataset ----------------------------------#
