@@ -157,8 +157,8 @@ class Trainer(object):
         data = torch.load(loadpath)
 
         self.step = data['step']
-        self.model.load_state_dict(data['model'])
-        self.ema_model.load_state_dict(data['ema'])
+        self.model.load_state_dict(data['model'], strict=False)
+        self.ema_model.load_state_dict(data['ema'], strict=False)
 
     #-----------------------------------------------------------------------------#
     #--------------------------------- rendering ---------------------------------#

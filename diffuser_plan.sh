@@ -6,15 +6,30 @@ mkdir -p output/diffuser_plan_kit
 
 # 변수 정의
 n_diffusion_steps=16
+prefix_path="diffusion_plan/kit"
 
 # GPU 장치 배열 정의
-declare -a GPU_DEVICES=(8)
+declare -a GPU_DEVICES=(0 1 2 3 4)
 
 # 데이터셋 배열 정의
 declare -a DATASETS=(
   #pen-cloned-v0"
   "kitchen-partial-v0"
+  "kitchen-partial-v0"
+  "kitchen-partial-v0"
+  "kitchen-partial-v0"
+  "kitchen-partial-v0"
 )
+
+# n_sample_timesteps 변수 정의
+declare -a n_sample_timesteps=(
+  16
+  8
+  4
+  2
+  1
+)
+
 
 # Loop over seed values from 0 to 149
 for seed in {0..149}
@@ -30,13 +45,20 @@ do
       --horizon 32 \
       --n_diffusion_steps ${n_diffusion_steps} \
       --seed $seed \
-      --n_sample_timesteps 16 \
+      --n_sample_timesteps ${n_sample_timesteps[$i]} \
       --discount 0.99 \
-      --prefix 'plans/kit' > output/diffuser_plan_kit/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1 &
+      --prefix ${prefix_path} > output/diffuser_plan_kit/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1 &
 
     pids+=($!)
-    echo "GPU ${GPU_DEVICES[$i]}에서 시드 $seed로 작업이 시작되었습니다"
-    echo "GPU ${GPU_DEVICES[$i]}: ${DATASETS[$i]} 데이터셋 (n_steps=${n_diffusion_steps})"
+    echo "----------------------------------------"
+    echo "[작업 시작] GPU ${GPU_DEVICES[$i]}"
+    echo "- 데이터셋: ${DATASETS[$i]}"
+    echo "- 시드: $seed" 
+    echo "- Diffusion Steps: ${n_diffusion_steps}"
+    echo "- Sample Timesteps: ${n_sample_timesteps[$i]}"
+    echo "- PID: $!"
+    echo "- Prefix: ${prefix_path}"
+    echo "----------------------------------------"
   done
 
   # Wait for all background jobs to finish before moving to the next seed

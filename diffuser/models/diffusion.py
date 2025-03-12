@@ -147,31 +147,34 @@ class GaussianDiffusion(nn.Module):
         alphas = 1 - betas
         alphas_cumprod = torch.cumprod(alphas, axis=0)
         alphas_cumprod_prev = torch.cat([torch.ones(1), alphas_cumprod[:-1]])
-        self.betas = betas
 
-        # 계산 효율성을 위한 값들 저장
-        self.sqrt_alphas_cumprod = torch.sqrt(alphas_cumprod)
-        self.sqrt_one_minus_alphas_cumprod = torch.sqrt(1. - alphas_cumprod)
-        self.log_one_minus_alphas_cumprod = torch.log(1. - alphas_cumprod)
-        self.sqrt_recip_alphas_cumprod = torch.sqrt(1. / alphas_cumprod)
-        self.sqrt_recipm1_alphas_cumprod = torch.sqrt(1. / alphas_cumprod - 1)
+        # register buffers for diffusion parameters
+        self.register_buffer('betas', betas)
+        self.register_buffer('alphas_cumprod', alphas_cumprod)
+        self.register_buffer('alphas_cumprod_prev', alphas_cumprod_prev)
 
-        # posterior q(x_{t-1} | x_t, x_0) 계산을 위한 값
+        # calculations for diffusion q(x_t | x_{t-1}) and others
+        self.register_buffer('sqrt_alphas_cumprod', torch.sqrt(alphas_cumprod))
+        self.register_buffer('sqrt_one_minus_alphas_cumprod', torch.sqrt(1. - alphas_cumprod))
+        self.register_buffer('log_one_minus_alphas_cumprod', torch.log(1. - alphas_cumprod))
+        self.register_buffer('sqrt_recip_alphas_cumprod', torch.sqrt(1. / alphas_cumprod))
+        self.register_buffer('sqrt_recipm1_alphas_cumprod', torch.sqrt(1. / alphas_cumprod - 1))
+
+        # calculations for posterior q(x_{t-1} | x_t, x_0)
         posterior_variance = betas * (1. - alphas_cumprod_prev) / (1. - alphas_cumprod)
-        self.posterior_variance = posterior_variance
-        self.posterior_log_variance_clipped = torch.log(torch.clamp(posterior_variance, min=1e-20))
-        self.posterior_mean_coef1 = betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod)
-        self.posterior_mean_coef2 = (1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod)
+        self.register_buffer('posterior_variance', posterior_variance)
+        self.register_buffer('posterior_log_variance_clipped', torch.log(torch.clamp(posterior_variance, min=1e-20)))
+        self.register_buffer('posterior_mean_coef1', betas * np.sqrt(alphas_cumprod_prev) / (1. - alphas_cumprod))
+        self.register_buffer('posterior_mean_coef2', (1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod))
 
-        # sampling을 위한 별도 베타값
-        timesteps = torch.linspace(0, self.n_timesteps - 1, self.n_sample_timesteps + 1).long()
-        self.timesteps = timesteps[:-1] # n_sample_timesteps
+        
+        sample_alphas = 1 - alphas.view(self.n_sample_timesteps, -1).prod(dim=1)
+        sample_betas = 1. - sample_alphas
 
-        sample_betas = betas[timesteps[:-1]]
-        sample_alphas = 1 - sample_betas
         sample_alphas_cumprod = torch.cumprod(sample_alphas, axis=0)
         sample_alphas_cumprod_prev = torch.cat([torch.ones(1), sample_alphas_cumprod[:-1]])
-
+        
+        
         self.sample_betas = sample_betas
         self.sample_alphas_cumprod = sample_alphas_cumprod
         self.sample_alphas_cumprod_prev = sample_alphas_cumprod_prev
