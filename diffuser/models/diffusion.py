@@ -276,10 +276,15 @@ class GaussianDiffusion(nn.Module):
             
             if self.predict_epsilon:
                 # velocity를 예측하는 방식
+                print("model_output : velocity")
                 x_less_noisy = x + model_output * (1.0/self.n_timesteps)
             else:
                 # x_start를 직접 예측하는 방식
-                x_less_noisy = model_output
+                # v_t(x)를 (f(x,t)-x)/(1-t) 형태로 표현
+                print("model_output : x_noisy")
+                t_normalized = t.float() / self.n_timesteps
+                t_normalized = t_normalized.view(-1, 1, 1)
+                x_less_noisy = x + (model_output - x)/(1.0 - t_normalized) * (1.0/self.n_timesteps)
                 
             x_less_noisy = apply_conditioning(x_less_noisy, cond, self.action_dim)
             return x_less_noisy
@@ -332,15 +337,20 @@ class GaussianDiffusion(nn.Module):
             x_noisy = self.q_sample(x_start=x_start, t=t, noise=noise)
             x_noisy = apply_conditioning(x_noisy, cond, self.action_dim)
 
-            v_t_predict = self.model(x_noisy, cond, t)
-            v_t_predict = apply_conditioning(v_t_predict, cond, self.action_dim)
-            
             theta_min = self.theta_min
             v_t_true = x_start - (1 - theta_min) * noise
-            v_t_true = apply_conditioning(v_t_true, cond, self.action_dim)
+            
+            if self.predict_epsilon:
+                target = v_t_true
+            else:
+                target = x_start
+            
+            model_output = self.model(x_noisy, cond, t)
+            model_output = apply_conditioning(model_output, cond, self.action_dim)
+            target = apply_conditioning(target, cond, self.action_dim)
 
-            assert v_t_true.shape == v_t_predict.shape
-            loss, info = self.loss_fn(v_t_predict, v_t_true)
+            assert model_output.shape == target.shape
+            loss, info = self.loss_fn(model_output, target)
         else:
             # 기존 diffusion 방식의 손실 계산
             x_t = self.q_sample(x_start=x_start, t=t, noise=noise)
