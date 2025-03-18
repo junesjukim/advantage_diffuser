@@ -15,30 +15,6 @@ from .helpers import (
 
 Sample = namedtuple('Sample', 'trajectories values chains')
 
-
-@torch.no_grad()
-def default_sample_fn(model, x, cond, t):
-    model_mean, _, model_log_variance = model.p_mean_variance(x=x, cond=cond, t=t)
-    model_std = torch.exp(0.5 * model_log_variance)
-
-    # no noise when t == 0
-    noise = torch.randn_like(x)
-    noise[t == 0] = 0
-
-    values = torch.zeros(len(x), device=x.device)
-    return model_mean + model_std * noise, values
-
-
-def sort_by_values(x, values):
-    inds = torch.argsort(values, descending=True)
-    x = x[inds]
-    values = values[inds]
-    return x, values
-
-
-def make_timesteps(batch_size, i, device):
-    t = torch.full((batch_size,), i, device=device, dtype=torch.long)
-    return t# diffuser/models/diffusion.py (통합 버전)
 from collections import namedtuple
 import numpy as np
 import torch
@@ -113,7 +89,8 @@ class GaussianDiffusion(nn.Module):
             print("imported diffusion.py for flowmatching")
         else:
             print("imported diffusion.py for diffusion")
-            
+        
+        self.mode = FLOWMATCHING_MODE
         self.model = model
         self.horizon = horizon
         self.observation_dim = observation_dim
@@ -224,6 +201,10 @@ class GaussianDiffusion(nn.Module):
         loss_weights[0, :self.action_dim] = action_weight
         return loss_weights
 
+    #=====================================================
+    #                     planning
+    #=====================================================
+
     def predict_start_from_noise(self, x_t, t, noise):
         """
         noise에서 x_0 예측 (diffusion 모델용)
@@ -232,13 +213,13 @@ class GaussianDiffusion(nn.Module):
         current_device = x_t.device
         
         # 필요한 텐서들을 현재 디바이스로 이동
-        sqrt_recip_alphas_cumprod = self.sqrt_recip_alphas_cumprod.to(current_device) 
-        sqrt_recipm1_alphas_cumprod = self.sqrt_recipm1_alphas_cumprod.to(current_device)
+        sample_sqrt_recip_alphas_cumprod = self.sample_sqrt_recip_alphas_cumprod.to(current_device) 
+        sample_sqrt_recipm1_alphas_cumprod = self.sample_sqrt_recipm1_alphas_cumprod.to(current_device)
         
         if self.predict_epsilon:
             return (
-                extract(sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t -
-                extract(sqrt_recipm1_alphas_cumprod, t, x_t.shape) * noise
+                extract(sample_sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t -
+                extract(sample_sqrt_recipm1_alphas_cumprod, t, x_t.shape) * noise
             )
         else:
             return noise
@@ -251,45 +232,50 @@ class GaussianDiffusion(nn.Module):
         current_device = x_t.device
         
         # 필요한 텐서들을 현재 디바이스로 이동
-        posterior_mean_coef1 = self.posterior_mean_coef1.to(current_device)
-        posterior_mean_coef2 = self.posterior_mean_coef2.to(current_device)
-        posterior_variance = self.posterior_variance.to(current_device)
-        posterior_log_variance_clipped = self.posterior_log_variance_clipped.to(current_device)
+        sample_posterior_mean_coef1 = self.sample_posterior_mean_coef1.to(current_device)
+        sample_posterior_mean_coef2 = self.sample_posterior_mean_coef2.to(current_device)
+        sample_posterior_variance = self.sample_posterior_variance.to(current_device)
+        sample_posterior_log_variance_clipped = self.sample_posterior_log_variance_clipped.to(current_device)
         
-        posterior_mean = (
-            extract(posterior_mean_coef1, t, x_t.shape) * x_start +
-            extract(posterior_mean_coef2, t, x_t.shape) * x_t
+        sample_posterior_mean = (
+            extract(sample_posterior_mean_coef1, t, x_t.shape) * x_start +
+            extract(sample_posterior_mean_coef2, t, x_t.shape) * x_t
         )
-        posterior_variance = extract(posterior_variance, t, x_t.shape)
-        posterior_log_variance_clipped = extract(posterior_log_variance_clipped, t, x_t.shape)
-        return posterior_mean, posterior_variance, posterior_log_variance_clipped
+        sample_posterior_variance = extract(sample_posterior_variance, t, x_t.shape)
+        sample_posterior_log_variance_clipped = extract(sample_posterior_log_variance_clipped, t, x_t.shape)
+        return sample_posterior_mean, sample_posterior_variance, sample_posterior_log_variance_clipped
 
     def p_mean_variance(self, x, cond, t):
         """
         예측 평균 및 분산 계산
         모델 타입에 따라 다른 구현 사용
         """
+        # 모든 입력을 동일한 디바이스로 이동
+        device = x.device
+        t = t.to(device)
+        
         if FLOWMATCHING_MODE:
             # flowmatching 방식의 구현
-            print( "FLOWMATCHING MODE :::: " +  str(FLOWMATCHING_MODE))
+            # 모델을 현재 디바이스로 이동
+            self.model = self.model.to(device)
             model_output = self.model(x, cond, t)
             
             if self.predict_epsilon:
                 # velocity를 예측하는 방식
-                print("model_output : velocity")
-                x_less_noisy = x + model_output * (1.0/self.n_timesteps)
+                x_less_noisy = x + model_output * (1.0/self.n_sample_timesteps)
             else:
                 # x_start를 직접 예측하는 방식
                 # v_t(x)를 (f(x,t)-x)/(1-t) 형태로 표현
-                print("model_output : x_noisy")
-                t_normalized = t.float() / self.n_timesteps
-                t_normalized = t_normalized.view(-1, 1, 1)
-                x_less_noisy = x + (model_output - x)/(1.0 - t_normalized) * (1.0/self.n_timesteps)
+                t_normalized = t.float() / self.n_sample_timesteps
+                t_normalized = t_normalized.view(-1, 1, 1).to(device)
+                x_less_noisy = x + (model_output - x)/(1.0 - t_normalized) * (1.0/self.n_sample_timesteps)
                 
             x_less_noisy = apply_conditioning(x_less_noisy, cond, self.action_dim)
             return x_less_noisy
         else:
             # 기존 diffusion 방식의 구현
+            # 모델을 현재 디바이스로 이동
+            self.model = self.model.to(device)
             x_recon = self.predict_start_from_noise(x, t=t, noise=self.model(x, cond, t))
 
             if self.clip_denoised:
@@ -299,9 +285,10 @@ class GaussianDiffusion(nn.Module):
                     x_start=x_recon, x_t=x, t=t)
             return model_mean, posterior_variance, posterior_log_variance
 
+    #=====================================================
+
     def q_sample(self, x_start, t, noise=None):
         """
-        노이즈 추가 샘플링
         모델 타입에 따라 다른 구현 사용
         """
         if noise is None:
@@ -373,6 +360,8 @@ class GaussianDiffusion(nn.Module):
         t = torch.randint(0, self.n_timesteps, (batch_size,), device=x.device).long()
         return self.p_losses(x, *args, t)
 
+    #=====================================================
+
     @torch.no_grad()
     def p_sample_loop(self, shape, cond, verbose=True, return_chain=False, sample_fn=default_sample_fn, **sample_kwargs):
         device = self.betas.device
@@ -394,8 +383,15 @@ class GaussianDiffusion(nn.Module):
 
         progress = utils.Progress(n_steps) if verbose else utils.Silent()
         
+        # 모델을 현재 디바이스로 이동
+        self.model = self.model.to(device)
+        
         for i in timesteps:
             t = make_timesteps(batch_size, i, device)
+            # 모든 텐서가 동일한 디바이스에 있는지 확인
+            t = t.to(device)
+            x = x.to(device)
+            
             x, values = sample_fn(self, x, cond, t, **sample_kwargs)
             x = apply_conditioning(x, cond, self.action_dim)
 

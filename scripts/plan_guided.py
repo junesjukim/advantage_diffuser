@@ -104,6 +104,11 @@ rollout = [observation.copy()]
 device = next(diffusion.parameters()).device
 print(f"모델 디바이스: {device}")
 
+# 모든 모델을 동일한 디바이스로 이동
+diffusion = diffusion.to(device)
+value_function = value_function.to(device)
+guide = guide.to(device)
+
 total_reward = 0
 for t in range(args.max_episode_length):
 

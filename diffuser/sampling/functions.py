@@ -4,7 +4,7 @@ from diffuser.models.helpers import (
     extract,
     apply_conditioning,
 )
-from diffuser.models.diffusion import FLOWMATCHING_MODE
+from diffuser.models.diffusion import FLOWMATCHING_MODE, set_model_mode
 
 @torch.no_grad()
 def n_step_guided_p_sample(
@@ -24,8 +24,20 @@ def n_step_guided_p_sample(
       n_guide_steps: 가이드 업데이트를 몇 번 수행할지 (기본값: 1)
       scale_grad_by_std: posterior variance로 스케일링 여부 (기본값: True)
     """
+
+    # 모든 텐서를 동일한 디바이스로 이동
+    device = x.device
+    t = t.to(device)
+
+    # 모델의 mode 속성을 우선 확인하고, 없는 경우에만 전역 변수 사용
+    is_flowmatching = getattr(model, 'mode', FLOWMATCHING_MODE)
+    print("FLOWMATCHING_MODE in functions.py: ", is_flowmatching, flush=True)
     
-    if not FLOWMATCHING_MODE:
+    # 모델과 가이드를 현재 디바이스로 이동
+    model = model.to(device)
+    guide.model = guide.model.to(device)
+    
+    if not is_flowmatching:
         # Diffusion 방식
         model_log_variance = extract(model.posterior_log_variance_clipped, t, x.shape)
         model_std = torch.exp(0.5 * model_log_variance)
@@ -34,8 +46,10 @@ def n_step_guided_p_sample(
     for _ in range(n_guide_steps):
         with torch.enable_grad():
             y, grad = guide.gradients(x, cond, t)
+            # 그래디언트를 현재 디바이스로 이동
+            grad = grad.to(device)
         
-        if scale_grad_by_std and not FLOWMATCHING_MODE:
+        if scale_grad_by_std and not is_flowmatching:
             # diffusion에서만 variance로 스케일링
             grad = model_var * grad
         
@@ -45,7 +59,7 @@ def n_step_guided_p_sample(
         x = x + scale * grad
         x = apply_conditioning(x, cond, model.action_dim)
     
-    if FLOWMATCHING_MODE:
+    if is_flowmatching:
         # Flowmatching: 직접 결정론적 업데이트 반환
         x_updated = model.p_mean_variance(x=x, cond=cond, t=t)
         return x_updated, y
