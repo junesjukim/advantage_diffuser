@@ -100344,3 +100344,41 @@ GPU 2: pen-cloned-v0 데이터셋 (n_steps=16)
 - PID: 2149749
 - Prefix: diffusion_plan/stepfixed2
 ----------------------------------------
+시드 2에 대한 모든 작업이 완료되었습니다
+----------------------------------------
+[작업 시작] GPU 3
+- 데이터셋: hopper-medium-replay-v2
+- 시드: 3
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 2150066
+- Prefix: flowmatching_plan/stepfixed2
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 4
+- 데이터셋: walker2d-medium-replay-v2
+- 시드: 3
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 2150067
+- Prefix: flowmatching_plan/stepfixed2
+----------------------------------------
+시드 3에 대한 모든 작업이 완료되었습니다
+----------------------------------------
+[작업 시작] GPU 3
+- 데이터셋: hopper-medium-replay-v2
+- 시드: 4
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 2150385
+- Prefix: flowmatching_plan/stepfixed2
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 4
+- 데이터셋: walker2d-medium-replay-v2
+- 시드: 4
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 2150386
+- Prefix: flowmatching_plan/stepfixed2
+----------------------------------------

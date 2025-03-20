@@ -258,7 +258,7 @@ class GaussianDiffusion(nn.Module):
             # flowmatching 방식의 구현
             # 모델을 현재 디바이스로 이동
             self.model = self.model.to(device)
-            model_output = self.model(x, cond, t)
+            model_output = self.model(x, cond,  t * (self.n_timesteps // self.n_sample_timesteps))
             
             if self.predict_epsilon:
                 # x_start를 직접 예측하는 방식
@@ -276,7 +276,7 @@ class GaussianDiffusion(nn.Module):
             # 기존 diffusion 방식의 구현
             # 모델을 현재 디바이스로 이동
             self.model = self.model.to(device)
-            x_recon = self.predict_start_from_noise(x, t=t, noise=self.model(x, cond, t))
+            x_recon = self.predict_start_from_noise(x, t=t, noise=self.model(x, cond,  ((t+1) * (self.n_timesteps // self.n_sample_timesteps) -1)))
 
             if self.clip_denoised:
                 x_recon.clamp_(-1., 1.)
