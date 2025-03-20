@@ -45,7 +45,12 @@ def n_step_guided_p_sample(
     
     for _ in range(n_guide_steps):
         with torch.enable_grad():
-            y, grad = guide.gradients(x, cond, t)
+            if is_flowmatching:
+                sample_t = t * (model.n_timesteps // model.n_sample_timesteps)
+            else:
+                sample_t = (t+1) * (model.n_timesteps // model.n_sample_timesteps) -1
+            
+            y, grad = guide.gradients(x, cond, sample_t)
             # 그래디언트를 현재 디바이스로 이동
             grad = grad.to(device)
         

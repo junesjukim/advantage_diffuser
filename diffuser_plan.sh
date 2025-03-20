@@ -1,5 +1,5 @@
 #!/bin/bash
-prefix_str="stepfixed2"
+prefix_str="stepfixed3"
 # Create output directory if it doesn't exist
 mkdir -p output
 mkdir -p output/diffuser_plan_${prefix_str}
@@ -9,28 +9,36 @@ n_diffusion_steps=20
 prefix_path="diffusion_plan/${prefix_str}"
 
 # GPU 장치 배열 정의
-declare -a GPU_DEVICES=(0 1)
+declare -a GPU_DEVICES=(0 1 2 3 4 5 6 7)
 
 # 데이터셋 배열 정의
 declare -a DATASETS=(
   #pen-cloned-v0"
   "hopper-medium-replay-v2"
-  # "hopper-medium-replay-v2"
-  # "hopper-medium-replay-v2"
-  # "walker2d-medium-replay-v2"
-  # "walker2d-medium-replay-v2"
+  "hopper-medium-replay-v2"
+  "hopper-medium-replay-v2"
+  "hopper-medium-replay-v2"
+  "walker2d-medium-replay-v2"
+  "walker2d-medium-replay-v2"
+  "walker2d-medium-replay-v2"
   "walker2d-medium-replay-v2"
 )
 
 # n_sample_timesteps 변수 정의
 declare -a n_sample_timesteps=(
   20
+  4
+  2
+  1
   20
+  4
+  2
+  1
 )
 
 
 # Loop over seed values from 0 to 149
-for seed in {0..149}
+for seed in {0..19}
 do
   # 각 GPU에서 작업 실행
   pids=()
