@@ -145,7 +145,7 @@ class GaussianDiffusion(nn.Module):
         self.register_buffer('posterior_mean_coef2', (1. - alphas_cumprod_prev) * np.sqrt(alphas) / (1. - alphas_cumprod))
 
         
-        sample_alphas = 1 - alphas.view(self.n_sample_timesteps, -1).prod(dim=1)
+        sample_alphas = alphas.view(self.n_sample_timesteps, -1).prod(dim=1)
         sample_betas = 1. - sample_alphas
 
         sample_alphas_cumprod = torch.cumprod(sample_alphas, axis=0)
@@ -261,14 +261,14 @@ class GaussianDiffusion(nn.Module):
             model_output = self.model(x, cond, t)
             
             if self.predict_epsilon:
-                # velocity를 예측하는 방식
-                x_less_noisy = x + model_output * (1.0/self.n_sample_timesteps)
-            else:
                 # x_start를 직접 예측하는 방식
                 # v_t(x)를 (f(x,t)-x)/(1-t) 형태로 표현
                 t_normalized = t.float() / self.n_sample_timesteps
                 t_normalized = t_normalized.view(-1, 1, 1).to(device)
                 x_less_noisy = x + (model_output - x)/(1.0 - t_normalized) * (1.0/self.n_sample_timesteps)
+            else:
+                # velocity를 예측하는 방식
+                x_less_noisy = x + model_output * (1.0/self.n_sample_timesteps)
                 
             x_less_noisy = apply_conditioning(x_less_noisy, cond, self.action_dim)
             return x_less_noisy

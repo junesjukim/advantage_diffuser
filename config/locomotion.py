@@ -120,7 +120,7 @@ base = {
 
         ## sample_kwargs
         'n_guide_steps': 2,
-        'scale': 0.1,
+        'scale': 0.0,
         't_stopgrad': 2,
         'scale_grad_by_std': True,
         'n_sample_timesteps': None,
