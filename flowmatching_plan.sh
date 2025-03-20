@@ -1,35 +1,31 @@
 #!/bin/bash
-
+prefix_str="stepfixed2"
 # Create output directory if it doesn't exist
 mkdir -p output
-mkdir -p output/flowmatcher_plan_stepfixed
+mkdir -p output/flowmatcher_plan_${prefix_str}
 
 # 변수 정의
 n_diffusion_steps=20
-prefix_path="flowmatching_plan/stepfixed"
+prefix_path="flowmatching_plan/${prefix_str}"
 
 # GPU 장치 배열 정의
-declare -a GPU_DEVICES=(3 4 5 6 7 8)
+declare -a GPU_DEVICES=(3 4)
 
 # 데이터셋 배열 정의
 declare -a DATASETS=(
   #pen-cloned-v0"
   "hopper-medium-replay-v2"
-  "hopper-medium-replay-v2"
-  "hopper-medium-replay-v2"
-  "walker2d-medium-replay-v2"
-  "walker2d-medium-replay-v2"
+  # "hopper-medium-replay-v2"
+  # "hopper-medium-replay-v2"
+  # "walker2d-medium-replay-v2"
+  # "walker2d-medium-replay-v2"
   "walker2d-medium-replay-v2"
 )
 
 # n_sample_timesteps 변수 정의
 declare -a n_sample_timesteps=(
-  4
-  2
-  1
-  4
-  2
-  1
+  20
+  20
 )
 
 
@@ -49,7 +45,7 @@ do
       --seed $seed \
       --n_sample_timesteps ${n_sample_timesteps[$i]} \
       --discount 0.99 \
-      --prefix ${prefix_path} > output/flowmatcher_plan_stepfixed/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1 &
+      --prefix ${prefix_path} > output/flowmatcher_plan_${prefix_str}/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1 &
 
     pids+=($!)
     echo "----------------------------------------"

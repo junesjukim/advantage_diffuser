@@ -56,13 +56,13 @@ def main():
     # Define the categories with their corresponding file path templates
     categories = {
         # hopper-medium-replay 환경
-        f"{env1}_ST4": f"logs/{env1}-v2/flowmatching_plan/stepfixed_H4_T20_S{{seed}}_d0.99_ST4/0/rollout.json",
-        f"{env1}_ST2": f"logs/{env1}-v2/flowmatching_plan/stepfixed_H4_T20_S{{seed}}_d0.99_ST2/0/rollout.json",
-        f"{env1}_ST1": f"logs/{env1}-v2/flowmatching_plan/stepfixed_H4_T20_S{{seed}}_d0.99_ST1/0/rollout.json",
-        # walker2d-medium-replay 환경
-        f"{env2}_ST4": f"logs/{env2}-v2/flowmatching_plan/stepfixed_H4_T20_S{{seed}}_d0.99_ST4/0/rollout.json",
-        f"{env2}_ST2": f"logs/{env2}-v2/flowmatching_plan/stepfixed_H4_T20_S{{seed}}_d0.99_ST2/0/rollout.json",
-        f"{env2}_ST1": f"logs/{env2}-v2/flowmatching_plan/stepfixed_H4_T20_S{{seed}}_d0.99_ST1/0/rollout.json",
+        f"{env1}_ST20": f"logs/{env1}-v2/{mode}_plan/stepfixed2_H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
+        # f"{env1}_ST2": f"logs/{env1}-v2/{mode}_plan/stepfixed2_H4_T20_S{{seed}}_d0.99_ST2/0/rollout.json",
+        # f"{env1}_ST1": f"logs/{env1}-v2/{mode}_plan/stepfixed2_H4_T20_S{{seed}}_d0.99_ST1/0/rollout.json",
+        # # walker2d-medium-replay 환경
+        # f"{env2}_ST4": f"logs/{env2}-v2/{mode}_plan/stepfixed2_H4_T20_S{{seed}}_d0.99_ST4/0/rollout.json",
+        # f"{env2}_ST2": f"logs/{env2}-v2/{mode}_plan/stepfixed2_H4_T20_S{{seed}}_d0.99_ST2/0/rollout.json",
+        f"{env2}_ST20": f"logs/{env2}-v2/{mode}_plan/stepfixed2_H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
     }
     # Dictionary to hold results per seed
     results = {}
