@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#test
 # 변수 정의
 n_diffusion_steps=16
 prefix_path="diffusion_plan/pen"
