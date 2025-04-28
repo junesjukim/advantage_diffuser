@@ -1,23 +1,24 @@
+###########################
+# Flowmatching Plan Epoch #
+# 2025.04.29             #
+# Normalize가 train이랑 train_value랑 달라서 실행 안됨 #
+###########################
+
 #!/bin/bash
-prefix_str="stepfixed3"
+prefix_str="epoch_walk"
 # Create output directory if it doesn't exist
 mkdir -p output
-mkdir -p output/diffuser_plan_${prefix_str}
+mkdir -p output/flowmatching_plan_${prefix_str}
 
 # 변수 정의
 n_diffusion_steps=20
-prefix_path="diffusion_plan/${prefix_str}"
+prefix_path="flowmatching_plan/${prefix_str}"
 
 # GPU 장치 배열 정의
-declare -a GPU_DEVICES=(0 1 2 3 4 5 6 7)
+declare -a GPU_DEVICES=(0 0 1 1)
 
 # 데이터셋 배열 정의
 declare -a DATASETS=(
-  #pen-cloned-v0"
-  "hopper-medium-replay-v2"
-  "hopper-medium-replay-v2"
-  "hopper-medium-replay-v2"
-  "hopper-medium-replay-v2"
   "walker2d-medium-replay-v2"
   "walker2d-medium-replay-v2"
   "walker2d-medium-replay-v2"
@@ -27,15 +28,17 @@ declare -a DATASETS=(
 # n_sample_timesteps 변수 정의
 declare -a n_sample_timesteps=(
   20
-  4
-  2
-  1
   20
-  4
-  2
-  1
+  20
+  20
 )
 
+declare -a diffusion_epochs=(
+  0
+  200000
+  400000
+  600000
+)
 
 # Loop over seed values from 0 to 149
 for seed in {0..19}
@@ -46,14 +49,15 @@ do
     OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py \
       --dataset ${DATASETS[$i]} \
       --logbase logs \
-      --diffusion_loadpath "f:diffusion/diffuser_H4_T${n_diffusion_steps}_S0" \
-      --value_loadpath "f:values/diffusion_H4_T${n_diffusion_steps}_S0_d0.99" \
+      --diffusion_loadpath "f:flowmatching/flowmatcher_H4_T${n_diffusion_steps}_S0" \
+      --value_loadpath "f:values/flowmatching_H4_T${n_diffusion_steps}_S0_d0.99" \
+      --diffusion_epoch ${diffusion_epochs[$i]} \
       --horizon 4 \
       --n_diffusion_steps ${n_diffusion_steps} \
       --seed $seed \
       --n_sample_timesteps ${n_sample_timesteps[$i]} \
       --discount 0.99 \
-      --prefix ${prefix_path} > output/diffuser_plan_${prefix_str}/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1 &
+      --prefix ${prefix_path} > output/flowmatching_plan_${prefix_str}/output_${GPU_DEVICES[$i]}_seed_${seed}_E${diffusion_epochs[$i]}.log 2>&1 &
 
     pids+=($!)
     echo "----------------------------------------"
