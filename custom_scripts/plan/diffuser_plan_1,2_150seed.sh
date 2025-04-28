@@ -1,5 +1,5 @@
 #!/bin/bash
-
+##test commit
 # Create output directory if it doesn't exist
 mkdir -p output
 mkdir -p output/diffuser_plan_1,2
