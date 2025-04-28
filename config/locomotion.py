@@ -198,18 +198,41 @@ walker2d_medium_replay_v2 = walker2d_medium_v2 = walker2d_medium_expert_v2 = {
     },
 }
 
-# hopper_medium_replay_v2 = hopper_medium_v2 = hopper_medium_expert_v2 = {
-#     'diffusion': {
-#         'horizon': 4,
-#         'dim_mults': (1, 4, 8),
-#     },
-#     'values': {
-#         'horizon': 4,
-#         'dim_mults': (1, 4, 8),
-#     },
-#     'plan': {
-#         'horizon': 4,
-#         'scale': 0.0,
-#         't_stopgrad': 0,
-#     },
-# }
+hopper_medium_replay_v2 = hopper_medium_v2 = hopper_medium_expert_v2 = {
+    'diffusion': {
+        'horizon': 4,
+        'dim_mults': (1, 4, 8),
+    },
+    'values': {
+        'horizon': 4,
+        'dim_mults': (1, 4, 8),
+    },
+    'plan': {
+        'horizon': 4,
+        'scale': 0.0,
+        't_stopgrad': 0,
+    },
+}
+kitchen_partial_v0 = {
+    'diffusion': {
+        'max_path_length': 280,
+    },
+    'values': {
+        'max_path_length': 280,
+    },
+    'plan': {
+        'max_episode_length': 280,
+    },
+}
+
+pen_cloned_v0 = {
+    'diffusion': {
+        'max_path_length': 100,
+    },
+    'values': {
+        'max_path_length': 100,
+    },
+    'plan': {
+        'max_episode_length': 100,
+    },
+}
