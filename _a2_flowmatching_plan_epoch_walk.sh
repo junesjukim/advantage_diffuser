@@ -15,7 +15,7 @@ n_diffusion_steps=20
 prefix_path="flowmatching_plan/${prefix_str}"
 
 # GPU 장치 배열 정의
-declare -a GPU_DEVICES=(0 0 1 1)
+declare -a GPU_DEVICES=(8 8 9 9)
 
 # 데이터셋 배열 정의
 declare -a DATASETS=(
@@ -49,7 +49,7 @@ do
     OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU_DEVICES[$i]} python scripts/plan_guided.py \
       --dataset ${DATASETS[$i]} \
       --logbase logs \
-      --diffusion_loadpath "f:flowmatching/flowmatcher_H4_T${n_diffusion_steps}_S0" \
+      --diffusion_loadpath "f:flowmatching/flowmatcher_peF_H4_T${n_diffusion_steps}_S0" \
       --value_loadpath "f:values/flowmatching_H4_T${n_diffusion_steps}_S0_d0.99" \
       --diffusion_epoch ${diffusion_epochs[$i]} \
       --horizon 4 \

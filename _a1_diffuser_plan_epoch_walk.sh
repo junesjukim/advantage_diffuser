@@ -9,7 +9,7 @@ n_diffusion_steps=20
 prefix_path="diffusion_plan/${prefix_str}"
 
 # GPU 장치 배열 정의
-declare -a GPU_DEVICES=(0 0 1 1)
+declare -a GPU_DEVICES=(6 6 7 7)
 
 # 데이터셋 배열 정의
 declare -a DATASETS=(

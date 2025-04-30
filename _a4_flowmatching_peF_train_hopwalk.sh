@@ -10,7 +10,7 @@ n_diffusion_steps=20
 seed=0
 
 # GPU 장치 배열 정의
-declare -a GPU_DEVICES=(0 1)
+declare -a GPU_DEVICES=(8 9)
 # 데이터셋 배열 정의  
 declare -a DATASETS=(
   "walker2d-medium-replay-v2"
