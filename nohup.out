@@ -147,3 +147,40 @@
 - PID: 10452
 - Prefix: flowmatching_plan/epoch_walk
 ----------------------------------------
+시드 3에 대한 모든 작업이 완료되었습니다
+----------------------------------------
+[작업 시작] GPU 8
+- 데이터셋: walker2d-medium-replay-v2
+- 시드: 4
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 11814
+- Prefix: flowmatching_plan/epoch_walk
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 8
+- 데이터셋: walker2d-medium-replay-v2
+- 시드: 4
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 11815
+- Prefix: flowmatching_plan/epoch_walk
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 9
+- 데이터셋: walker2d-medium-replay-v2
+- 시드: 4
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 11816
+- Prefix: flowmatching_plan/epoch_walk
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 9
+- 데이터셋: walker2d-medium-replay-v2
+- 시드: 4
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 11817
+- Prefix: flowmatching_plan/epoch_walk
+----------------------------------------
