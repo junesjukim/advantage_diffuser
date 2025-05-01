@@ -184,3 +184,76 @@
 - PID: 11817
 - Prefix: flowmatching_plan/epoch_walk
 ----------------------------------------
+./_b1_flowmatching_plan_peT_hopwalk.sh: 17: ./_b1_flowmatching_plan_peT_hopwalk.sh: Syntax error: "(" unexpected
+----------------------------------------
+[작업 시작] GPU 0
+- 데이터셋: hopper-medium-replay-v2
+- 시드: 0
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 5051
+- Prefix: flowmatching_plan/peT_hopwalk
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 1
+- 데이터셋: hopper-medium-replay-v2
+- 시드: 0
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 5052
+- Prefix: flowmatching_plan/peT_hopwalk
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 2
+- 데이터셋: walker2d-medium-replay-v2
+- 시드: 0
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 5053
+- Prefix: flowmatching_plan/peT_hopwalk
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 3
+- 데이터셋: walker2d-medium-replay-v2
+- 시드: 0
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 5054
+- Prefix: flowmatching_plan/peT_hopwalk
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 0
+- 데이터셋: hopper-medium-replay-v2
+- 시드: 0
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 6377
+- Prefix: flowmatching_plan/peT_hopwalk
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 1
+- 데이터셋: hopper-medium-replay-v2
+- 시드: 0
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 6378
+- Prefix: flowmatching_plan/peT_hopwalk
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 2
+- 데이터셋: walker2d-medium-replay-v2
+- 시드: 0
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 6379
+- Prefix: flowmatching_plan/peT_hopwalk
+----------------------------------------
+----------------------------------------
+[작업 시작] GPU 3
+- 데이터셋: walker2d-medium-replay-v2
+- 시드: 0
+- Diffusion Steps: 20
+- Sample Timesteps: 20
+- PID: 6380
+- Prefix: flowmatching_plan/peT_hopwalk
+----------------------------------------
