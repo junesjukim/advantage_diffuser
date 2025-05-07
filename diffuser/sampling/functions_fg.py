@@ -8,7 +8,7 @@ from diffuser.models.diffusion import FLOWMATCHING_MODE, set_model_mode
 
 @torch.no_grad()
 def n_step_guided_p_sample(
-    model, x, cond, t, guide, scale=0.001, t_stopgrad=0, n_guide_steps=1, beta=1.0, scale_grad_by_std=True,
+    model, x, cond, t, guide, scale=0.001, t_stopgrad=0, n_guide_steps=1, scale_grad_by_std=True,
 ):
     """
     통합된 가이드 샘플링 함수 (diffusion 및 flowmatching 모두 지원)
@@ -63,7 +63,7 @@ def n_step_guided_p_sample(
             sample_t_normalized = sample_t / model.n_timesteps
             sample_t_normalized = sample_t_normalized.view(-1, 1, 1).to(device)
             b_t     = (1.0 - (1.0 - theta_min) * sample_t_normalized) / (sample_t_normalized + 1e-8)
-            grad    = - beta * b_t * grad                 #   −β b_t ∇E
+            grad    = b_t * grad                 #   −β b_t ∇E
 
         # t < t_stopgrad 인 경우 gradient 업데이트를 중단
         grad[t < t_stopgrad] = 0

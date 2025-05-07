@@ -41,7 +41,7 @@ declare -a diffusion_epochs=(
 )
 
 # Loop over seed values from 0 to 149
-for seed in {0..19}
+for seed in {20..149}
 do
   # 각 GPU에서 작업 실행
   pids=()

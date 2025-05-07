@@ -14,20 +14,16 @@ n_diffusion_steps=20
 prefix_path="flowmatching_plan/${prefix_str}"
 
 # GPU 장치 배열 정의
-declare -a GPU_DEVICES=(0 1 2 3)
+declare -a GPU_DEVICES=(0 1)
 
 # 데이터셋 배열 정의
 declare -a DATASETS=(
   "hopper-medium-replay-v2"
-  "hopper-medium-replay-v2"
-  "walker2d-medium-replay-v2"
   "walker2d-medium-replay-v2"
 )
 
 # n_sample_timesteps 변수 정의
 declare -a n_sample_timesteps=(
-  20
-  20
   20
   20
 )
