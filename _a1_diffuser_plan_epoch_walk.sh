@@ -9,7 +9,7 @@ n_diffusion_steps=20
 prefix_path="diffusion_plan/${prefix_str}"
 
 # GPU 장치 배열 정의
-declare -a GPU_DEVICES=(6 6 7 7)
+declare -a GPU_DEVICES=(2 3 4 5)
 
 # 데이터셋 배열 정의
 declare -a DATASETS=(
@@ -35,7 +35,7 @@ declare -a diffusion_epochs=(
 )
 
 # Loop over seed values from 0 to 149
-for seed in {0..149}
+for seed in {0..49}
 do
   # 각 GPU에서 작업 실행
   pids=()
@@ -51,7 +51,7 @@ do
       --seed $seed \
       --n_sample_timesteps ${n_sample_timesteps[$i]} \
       --discount 0.99 \
-      --prefix ${prefix_path} > output/diffuser_plan_${prefix_str}/output_${GPU_DEVICES[$i]}_seed_${seed}_E${diffusion_epochs[$i]}.log 2>&1 &
+      --prefix ${prefix_path}/${diffusion_epochs[$i]}/ > output/diffuser_plan_${prefix_str}/output_${GPU_DEVICES[$i]}_seed_${seed}_E${diffusion_epochs[$i]}.log 2>&1 &
 
     pids+=($!)
     echo "----------------------------------------"
