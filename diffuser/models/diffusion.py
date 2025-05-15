@@ -15,22 +15,6 @@ from .helpers import (
 
 Sample = namedtuple('Sample', 'trajectories values chains')
 
-from collections import namedtuple
-import numpy as np
-import torch
-from torch import nn
-import pdb
-
-import diffuser.utils as utils
-from .helpers import (
-    cosine_beta_schedule,
-    extract,
-    apply_conditioning,
-    Losses,
-)
-
-Sample = namedtuple('Sample', 'trajectories values chains')
-
 # 모델 타입 선택을 위한 글로벌 변수
 FLOWMATCHING_MODE = False
 
@@ -260,13 +244,12 @@ class GaussianDiffusion(nn.Module):
             self.model = self.model.to(device)
             model_output = self.model(x, cond,  t * (self.n_timesteps // self.n_sample_timesteps))
             
-            if self.predict_epsilon:
+            if self.predict_epsilon:  # x_start 예측 모드
                 # x_start를 직접 예측하는 방식
-                # v_t(x)를 (f(x,t)-x)/(1-t) 형태로 표현
                 t_normalized = t.float() / self.n_sample_timesteps
                 t_normalized = t_normalized.view(-1, 1, 1).to(device)
                 x_less_noisy = x + (model_output - x)/(1.0 - t_normalized) * (1.0/self.n_sample_timesteps)
-            else:
+            else:  # velocity 예측 모드
                 # velocity를 예측하는 방식
                 x_less_noisy = x + model_output * (1.0/self.n_sample_timesteps)
                 
@@ -274,9 +257,8 @@ class GaussianDiffusion(nn.Module):
             return x_less_noisy
         else:
             # 기존 diffusion 방식의 구현
-            # 모델을 현재 디바이스로 이동
             self.model = self.model.to(device)
-            x_recon = self.predict_start_from_noise(x, t=t, noise=self.model(x, cond,  ((t+1) * (self.n_timesteps // self.n_sample_timesteps) -1)))
+            x_recon = self.predict_start_from_noise(x, t=t, noise=self.model(x, cond, ((t+1) * (self.n_timesteps // self.n_sample_timesteps) -1)))
 
             if self.clip_denoised:
                 x_recon.clamp_(-1., 1.)
@@ -327,10 +309,10 @@ class GaussianDiffusion(nn.Module):
             theta_min = self.theta_min
             v_t_true = x_start - (1 - theta_min) * noise
             
-            if self.predict_epsilon:
-                target = v_t_true
-            else:
+            if self.predict_epsilon:  # x_start 예측 모드
                 target = x_start
+            else:  # velocity 예측 모드
+                target = v_t_true
             
             model_output = self.model(x_noisy, cond, t)
             model_output = apply_conditioning(model_output, cond, self.action_dim)

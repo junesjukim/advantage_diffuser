@@ -143,6 +143,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Output files
+nohup.out
+
+# Cache directories
+.cache/
 
 #logs
 logs
