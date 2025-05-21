@@ -55,23 +55,15 @@ def main():
     
     # Define the categories with their corresponding file path templates
     categories = {
-        # Diffuser Plan Epoch Walk
-        "diffuser_epoch0": f"logs/walker2d-medium-replay-v2/diffusion_plan/epoch_walk/0/H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
-        "diffuser_epoch200k": f"logs/walker2d-medium-replay-v2/diffusion_plan/epoch_walk/200000/H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
-        "diffuser_epoch400k": f"logs/walker2d-medium-replay-v2/diffusion_plan/epoch_walk/400000/H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
-        "diffuser_epoch600k": f"logs/walker2d-medium-replay-v2/diffusion_plan/epoch_walk/600000/H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
-        
-        # Flowmatching Plan Epoch Walk
-        "flowmatching_epoch0": f"logs/walker2d-medium-replay-v2/flowmatching_plan/epoch_walk/0/H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
-        "flowmatching_epoch200k": f"logs/walker2d-medium-replay-v2/flowmatching_plan/epoch_walk/200000/H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
-        "flowmatching_epoch400k": f"logs/walker2d-medium-replay-v2/flowmatching_plan/epoch_walk/400000/H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
-        "flowmatching_epoch600k": f"logs/walker2d-medium-replay-v2/flowmatching_plan/epoch_walk/600000/H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
+        # Flowmatching Plan peT vs peF
+        "flowmatching_peT_hop": f"logs/walker2d-medium-replay-v2/flowmatching_plan/peT_hopwalk_H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
+        "flowmatching_peT_walk": f"logs/hopper-medium-replay-v2/flowmatching_plan/peT_hopwalk_H4_T20_S{{seed}}_d0.99_ST20/0/rollout.json",
     }
     # Dictionary to hold results per seed
     results = {}
 
     # Loop over seed numbers
-    for seed in range(150):
+    for seed in range(50):
         results[seed] = {}
         for cat_name, path_template in categories.items():
             file_path = path_template.format(seed=seed)
@@ -82,7 +74,7 @@ def main():
     averages = {}
     std_errors = {}
     for cat in categories.keys():
-        valid_scores = [results[seed][cat] for seed in range(150) if results[seed][cat] is not None]
+        valid_scores = [results[seed][cat] for seed in range(50) if results[seed][cat] is not None]
         if valid_scores:
             avg = sum(valid_scores) / len(valid_scores)
             averages[cat] = avg
@@ -103,7 +95,7 @@ def main():
         writer.writerow(header)
         
         # Write one row per seed
-        for seed in range(150):
+        for seed in range(50):
             row = [seed] + [results[seed][cat] for cat in categories.keys()]
             writer.writerow(row)
         
