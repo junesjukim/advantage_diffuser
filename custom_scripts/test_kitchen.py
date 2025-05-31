@@ -1,8 +1,7 @@
-import d4rl
 import gym
 
 print("테스트 시작")
-env = gym.make('pen-cloned-v0')
+env = gym.make("pen-cloned-v0")
 dataset = env.get_dataset()
 
 # 환경 정보 출력
@@ -30,11 +29,11 @@ print(f"리워드 표준편차: {dataset['rewards'].std()}")
 
 # for i in range(len(dataset['rewards'])):
 #     current_episode_reward += dataset['rewards'][i]
-    
+
 #     if dataset['terminals'][i]:
 #         episode_rewards.append(current_episode_reward)
 #         current_episode_reward = 0
-        
+
 #         # 마지막 에피소드의 리워드 변화 상세 출력 (예시로 마지막 에피소드만)
 #         if len(episode_rewards) == len(episode_rewards):
 #             print(f"\n마지막 에피소드의 리워드 변화:")

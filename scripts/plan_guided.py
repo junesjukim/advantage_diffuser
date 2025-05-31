@@ -1,50 +1,54 @@
-import pdb
+
+# -----------------------------------------------------------------------------#
+# -------------------------- conda env test -----------------------------------#
+# -----------------------------------------------------------------------------#
+import os
 
 import diffuser.sampling as sampling
 import diffuser.utils as utils
-import torch
-
 from diffuser.models.diffusion import set_model_mode
-
-
-#-----------------------------------------------------------------------------#
-#-------------------------- conda env test -----------------------------------#
-#-----------------------------------------------------------------------------#
-
-import os
 
 conda_env = os.environ.get("CONDA_DEFAULT_ENV", "Conda environment not detected")
 print("Active conda environment:", conda_env)
 
-#-----------------------------------------------------------------------------#
-#----------------------------------- setup -----------------------------------#
-#-----------------------------------------------------------------------------#
+# -----------------------------------------------------------------------------#
+# ----------------------------------- setup -----------------------------------#
+# -----------------------------------------------------------------------------#
+
 
 class Parser(utils.Parser):
-    dataset: str = 'walker2d-medium-replay-v2'
-    config: str = 'config.locomotion'
+    dataset: str = "walker2d-medium-replay-v2"
+    config: str = "config.locomotion"
 
 
-args = Parser().parse_args('plan')
+args = Parser().parse_args("plan")
 
 # 모델 모드 설정
 set_model_mode(args.prefix)
 
 
-#-----------------------------------------------------------------------------#
-#---------------------------------- loading ----------------------------------#
-#-----------------------------------------------------------------------------#
+# -----------------------------------------------------------------------------#
+# ---------------------------------- loading ----------------------------------#
+# -----------------------------------------------------------------------------#
 ## load diffusion model and value function from disk
-print(f"========== n_sample_timesteps: {args.n_sample_timesteps} ==========", flush=True)
+print(
+    f"========== n_sample_timesteps: {args.n_sample_timesteps} ==========", flush=True
+)
 diffusion_experiment = utils.load_diffusion(
-    args.loadbase, args.dataset, args.diffusion_loadpath,
-    epoch=args.diffusion_epoch, seed=args.seed,
+    args.loadbase,
+    args.dataset,
+    args.diffusion_loadpath,
+    epoch=args.diffusion_epoch,
+    seed=args.seed,
     n_sample_timesteps=args.n_sample_timesteps,
 )
-print("="*30 + str(args.n_sample_timesteps) + "="*30)
+print("=" * 30 + str(args.n_sample_timesteps) + "=" * 30)
 value_experiment = utils.load_diffusion(
-    args.loadbase, args.dataset, args.value_loadpath,
-    epoch=args.value_epoch, seed=args.seed,
+    args.loadbase,
+    args.dataset,
+    args.value_loadpath,
+    epoch=args.value_epoch,
+    seed=args.seed,
     n_sample_timesteps=args.n_sample_timesteps,
 )
 
@@ -90,9 +94,9 @@ logger = logger_config()
 policy = policy_config()
 
 
-#-----------------------------------------------------------------------------#
-#--------------------------------- main loop ---------------------------------#
-#-----------------------------------------------------------------------------#
+# -----------------------------------------------------------------------------#
+# --------------------------------- main loop ---------------------------------#
+# -----------------------------------------------------------------------------#
 
 env = dataset.env
 observation = env.reset()
@@ -111,16 +115,18 @@ guide = guide.to(device)
 
 total_reward = 0
 for t in range(args.max_episode_length):
-
-    if t % 10 == 0: print(args.savepath, flush=True)
+    if t % 10 == 0:
+        print(args.savepath, flush=True)
 
     ## save state for rendering only
-    #state = env.state_vector().copy()
+    # state = env.state_vector().copy()
 
     ## format current observation for conditioning
     conditions = {0: observation}
-        
-    action, samples = policy(conditions, batch_size=args.batch_size, verbose=args.verbose)
+
+    action, samples = policy(
+        conditions, batch_size=args.batch_size, verbose=args.verbose
+    )
 
     ## execute action in environment
     next_observation, reward, terminal, _ = env.step(action)
@@ -129,8 +135,8 @@ for t in range(args.max_episode_length):
     total_reward += reward
     score = env.get_normalized_score(total_reward)
     print(
-        f't: {t} | r: {reward:.2f} |  R: {total_reward:.2f} | score: {score:.4f} | '
-        f'values: {samples.values} | scale: {args.scale}',
+        f"t: {t} | r: {reward:.2f} |  R: {total_reward:.2f} | score: {score:.4f} | "
+        f"values: {samples.values} | scale: {args.scale}",
         flush=True,
     )
 
@@ -138,7 +144,7 @@ for t in range(args.max_episode_length):
     rollout.append(next_observation.copy())
 
     ## render every `args.vis_freq` steps
-    #logger.log(t, samples, state, rollout)
+    # logger.log(t, samples, state, rollout)
 
     if terminal:
         break
