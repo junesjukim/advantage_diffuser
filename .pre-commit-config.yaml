@@ -1,0 +1,18 @@
+# .pre-commit-config.yaml
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # ❗ 중요: 아래 'rev' 값을 Ruff의 최신 릴리즈 태그로 업데이트하세요.
+    #   최신 버전 확인: https://github.com/astral-sh/ruff/releases
+    rev: v0.11.12
+    hooks:
+      - id: ruff
+        name: ruff (lint)
+        # args: [--fix, --exit-non-zero-on-fix] # 기본값으로 --fix가 적용될 수 있으나, 명시적으로 추가하는 것이 좋습니다.
+        #   --exit-non-zero-on-fix: 자동 수정이 발생하면 커밋을 실패시켜 수정 내용을 확인하도록 합니다.
+        args: [--fix, --show-fixes, --exit-non-zero-on-fix]
+        # types_or: [python, pyi, jupyter] # 기본적으로 파이썬 관련 파일을 대상으로 합니다.
+
+      - id: ruff-format
+        name: ruff (format)
+        # types_or: [python, pyi, jupyter] # 기본적으로 파이썬 관련 파일을 대상으로 합니다.

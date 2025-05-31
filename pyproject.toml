@@ -1,0 +1,17 @@
+[tool.ruff]
+# 사용할 규칙 세트 선택 (E: Pycodestyle Errors, W: Pycodestyle Warnings, F: PyFlakes)
+select = ["E", "W", "F", "I", "RUF", "B"]
+# 무시할 규칙 (예: E501은 줄 길이 제한)
+ignore = ["E501"]
+# 한 줄의 최대 길이
+line-length = 88
+
+[tool.ruff.format]
+# 포맷터 사용 여부 (Ruff 0.0.289 이상)
+# 기본값은 Black 스타일을 따름
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint.isort]
+# import 정렬 관련 설정
+force-single-line = true
