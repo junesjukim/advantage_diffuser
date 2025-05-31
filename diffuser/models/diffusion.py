@@ -1,16 +1,15 @@
 from collections import namedtuple
+
 import numpy as np
 import torch
 from torch import nn
 
 import diffuser.utils as utils
-from .helpers import (
-    cosine_beta_schedule,
-    extract,
-    apply_conditioning,
-    Losses,
-)
 
+from .helpers import Losses
+from .helpers import apply_conditioning
+from .helpers import cosine_beta_schedule
+from .helpers import extract
 
 Sample = namedtuple("Sample", "trajectories values chains")
 
@@ -487,7 +486,6 @@ class GaussianDiffusion(nn.Module):
         """
         conditions : [ (time, state), ... ]
         """
-        device = self.betas.device
         batch_size = len(cond[0])
         horizon = horizon or self.horizon
         shape = (batch_size, horizon, self.transition_dim)
