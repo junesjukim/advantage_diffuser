@@ -29,7 +29,6 @@ for seed in "${seeds[@]}"; do
       --logbase logs \
       --horizon 32 \
       --n_diffusion_steps ${n_diffusion_steps} \
-      --n_saves 2 \
       --seed $seed \
       --prefix "flowmatching/flowmatcher_${prefix_str}" > output/flowmatching_${prefix_str}/output_${GPU_DEVICES[$i]}_seed_${seed}.log 2>&1 &
 

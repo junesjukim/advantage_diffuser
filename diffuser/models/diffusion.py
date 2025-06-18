@@ -96,7 +96,15 @@ class GaussianDiffusion(nn.Module):
         self.n_timesteps = n_timesteps
         self.n_sample_timesteps = n_sample_timesteps
         self.clip_denoised = clip_denoised
+        
+        # [Refactor] predict_epsilon의 의미를 명확히 하기 위해 prediction_type 변수 사용
         self.predict_epsilon = predict_epsilon
+        if self.mode:  # Flowmatching
+            self.prediction_type = "x_start" if self.predict_epsilon else "velocity"
+            print(f"Flowmatching model configured to predict: {self.prediction_type}")
+        else:  # Diffusion
+            self.prediction_type = "epsilon" if self.predict_epsilon else "x_start"
+            print(f"Diffusion model configured to predict: {self.prediction_type}")
 
         # 모델 타입에 따라 초기화 방식 분기
         if FLOWMATCHING_MODE:
@@ -256,7 +264,7 @@ class GaussianDiffusion(nn.Module):
             current_device
         )
 
-        if self.predict_epsilon:
+        if self.prediction_type == "epsilon":
             return (
                 extract(sample_sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t
                 - extract(sample_sqrt_recipm1_alphas_cumprod, t, x_t.shape) * noise
@@ -314,14 +322,14 @@ class GaussianDiffusion(nn.Module):
                 x, cond, t * (self.n_timesteps // self.n_sample_timesteps)
             )
 
-            if self.predict_epsilon:  # x_start 예측 모드
+            if self.prediction_type == "x_start":  # x_start 예측 모드
                 # x_start를 직접 예측하는 방식
                 t_normalized = t.float() / self.n_sample_timesteps
                 t_normalized = t_normalized.view(-1, 1, 1).to(device)
                 x_less_noisy = x + (model_output - x) / (1.0 - t_normalized) * (
                     1.0 / self.n_sample_timesteps
                 )
-            else:  # velocity 예측 모드
+            else:  # velocity 예측 모드 (self.prediction_type == "velocity")
                 # velocity를 예측하는 방식
                 x_less_noisy = x + model_output * (1.0 / self.n_sample_timesteps)
 
@@ -392,9 +400,9 @@ class GaussianDiffusion(nn.Module):
             theta_min = self.theta_min
             v_t_true = x_start - (1 - theta_min) * noise
 
-            if self.predict_epsilon:  # x_start 예측 모드
+            if self.prediction_type == "x_start":  # x_start 예측 모드
                 target = x_start
-            else:  # velocity 예측 모드
+            else:  # velocity 예측 모드 (self.prediction_type == "velocity")
                 target = v_t_true
 
             model_output = self.model(x_noisy, cond, t)
@@ -408,7 +416,7 @@ class GaussianDiffusion(nn.Module):
             x_t = self.q_sample(x_start=x_start, t=t, noise=noise)
             x_t = apply_conditioning(x_t, cond, self.action_dim)
 
-            if self.predict_epsilon:
+            if self.prediction_type == "epsilon":
                 target = noise
             else:
                 target = x_start
