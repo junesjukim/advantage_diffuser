@@ -7,6 +7,10 @@ from contextlib import redirect_stdout
 import gym
 import numpy as np
 
+import d4rl
+
+from ..utils import to_torch
+
 
 @contextmanager
 def suppress_output():
