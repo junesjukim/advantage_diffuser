@@ -1,8 +1,9 @@
-
 # -----------------------------------------------------------------------------#
 # -------------------------- conda env test -----------------------------------#
 # -----------------------------------------------------------------------------#
 import os
+import re
+import wandb
 
 import diffuser.sampling as sampling
 import diffuser.utils as utils
@@ -19,9 +20,35 @@ print("Active conda environment:", conda_env)
 class Parser(utils.Parser):
     dataset: str = "walker2d-medium-replay-v2"
     config: str = "config.locomotion"
+    wandb_project: str = "diffuser_research-planning-repenkit"
 
 
 args = Parser().parse_args("plan")
+
+# Extract seeds for wandb logging
+train_seed_match = re.search(r'_S(\d+)', args.diffusion_loadpath)
+train_seed = int(train_seed_match.group(1)) if train_seed_match else -1
+
+value_seed_match = re.search(r'_S(\d+)', args.value_loadpath)
+value_seed = int(value_seed_match.group(1)) if value_seed_match else -1
+
+plan_seed = args.seed
+
+# Initialize wandb
+wandb.init(
+    project=args.wandb_project,
+    config=vars(args),
+    name=f"{args.dataset.replace('-v0', '')}_tr{train_seed}_vs{value_seed}_ps{plan_seed}",
+    group=f"TR{train_seed}_VS{value_seed}_{args.dataset.replace('-v0', '')}",
+    tags=[args.dataset.replace('-v0', ''), f"train_seed_{train_seed}", f"value_seed_{value_seed}", f"plan_seed_{plan_seed}"],
+    reinit=True,
+)
+wandb.config.update({
+    "train_seed": train_seed,
+    "value_seed": value_seed,
+    "plan_seed": plan_seed
+})
+
 
 # 모델 모드 설정
 set_model_mode(args.prefix)
@@ -140,6 +167,14 @@ for t in range(args.max_episode_length):
         flush=True,
     )
 
+    # wandb logging
+    wandb.log({
+        'step_reward': reward,
+        'total_reward': total_reward,
+        'score': score,
+        'value_mean': samples.values.mean().item(),
+    }, step=t)
+
     ## update rollout observations
     rollout.append(next_observation.copy())
 
@@ -153,3 +188,10 @@ for t in range(args.max_episode_length):
 
 ## write results to json file at `args.savepath`
 logger.finish(t, score, total_reward, terminal, diffusion_experiment, value_experiment)
+
+# wandb finish
+wandb.summary['final_score'] = score
+wandb.summary['final_total_reward'] = total_reward
+wandb.summary['episode_length'] = t + 1
+wandb.summary['is_terminal'] = terminal
+wandb.finish()
