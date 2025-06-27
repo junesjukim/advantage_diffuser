@@ -102,7 +102,10 @@ class OgbenchDataset(SequenceDataset):
         '''
             conditions are supplied normalized
         '''
-        return {0: observations[0]}
+        return {
+            0: observations[0],
+            self.horizon - 1: observations[-1]
+        }
     
     def normalize(self, keys=['observations', 'actions']):
         for key in keys:
