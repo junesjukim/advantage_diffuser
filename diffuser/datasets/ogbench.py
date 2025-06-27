@@ -8,7 +8,11 @@ from .buffer import ReplayBuffer
 # lazy import
 import ogbench
 
-class OGBenchGoalDataset(SequenceDataset):
+class OgbenchDataset(SequenceDataset):
+    '''
+    https://github.com/og-bench/og-bench?tab=readme-ov-file
+    '''
+
     def __init__(
         self,
         env_name='scene-play-singletask-task2-v0',
@@ -21,17 +25,17 @@ class OGBenchGoalDataset(SequenceDataset):
         use_padding=True,
         seed=None,
         discount=0.99,
+        returns_scale=1.0,
         normed=False
     ):
-        self.env, self.train_dataset, self.val_dataset = ogbench.make_env_and_datasets(
-            env_name,
-            render_mode='rgb_array'
-        )
-        
-        self.observation_dim = self.train_dataset['observations'].shape[-1]
-        self.action_dim = self.train_dataset['actions'].shape[-1]
-        self.max_path_length = max_path_length
+        self.env_name = env_name
+        self.env, self.dataset, self.sequence_dataset = ogbench.make_env_and_datasets(self.env_name, render_mode='rgb_array')
+
+        self.preprocess_fn = get_preprocess_fn(preprocess_fns, self.env)
         self.horizon = horizon
+        self.max_path_length = max_path_length
+        self.observation_dim = self.dataset['observations'].shape[1]
+        self.action_dim = self.dataset['actions'].shape[1]
         self.use_padding = use_padding
         
         self.discount = discount
@@ -75,19 +79,19 @@ class OGBenchGoalDataset(SequenceDataset):
         
     def _split_episodes(self):
         episodes = []
-        terminals = self.train_dataset['terminals']
+        terminals = self.dataset['terminals']
         start_idx = 0
         
         for i in range(len(terminals)):
             if terminals[i]:
                 episode = {
-                    'observations': self.train_dataset['observations'][start_idx:i+1],
-                    'actions': self.train_dataset['actions'][start_idx:i+1],
-                    'rewards': self.train_dataset['rewards'][start_idx:i+1],
-                    'terminals': self.train_dataset['terminals'][start_idx:i+1],
-                    'next_observations': self.train_dataset['next_observations'][start_idx:i+1],
-                    'masks': self.train_dataset['masks'][start_idx:i+1],
-                    'timeouts': np.zeros_like(self.train_dataset['terminals'][start_idx:i+1])
+                    'observations': self.dataset['observations'][start_idx:i+1],
+                    'actions': self.dataset['actions'][start_idx:i+1],
+                    'rewards': self.dataset['rewards'][start_idx:i+1],
+                    'terminals': self.dataset['terminals'][start_idx:i+1],
+                    'next_observations': self.dataset['next_observations'][start_idx:i+1],
+                    'masks': self.dataset['masks'][start_idx:i+1],
+                    'timeouts': np.zeros_like(self.dataset['terminals'][start_idx:i+1])
                 }
                 episodes.append(episode)
                 start_idx = i + 1
@@ -95,10 +99,10 @@ class OGBenchGoalDataset(SequenceDataset):
         return episodes
     
     def get_conditions(self, observations):
-        return {
-            0: observations[0],
-            self.horizon - 1: observations[-1]
-        }
+        '''
+            conditions are supplied normalized
+        '''
+        return {0: observations[0]}
     
     def normalize(self, keys=['observations', 'actions']):
         for key in keys:
@@ -145,81 +149,5 @@ class OGBenchGoalDataset(SequenceDataset):
 
         return Batch(trajectories, conditions)
 
-
-class OGBenchValueDataset(OGBenchGoalDataset):
-    def __init__(
-        self,
-        env_name,
-        horizon,
-        normalizer,
-        preprocess_fns,
-        max_path_length,
-        max_n_episodes,
-        termination_penalty,
-        use_padding,
-        seed=None,
-        discount=0.99,
-        normed=False,
-        q_network=None,
-        v_network=None,
-        device='cuda'
-    ):
-        self.q_network = q_network
-        self.v_network = v_network
-        self.device = device
-        
-        super().__init__(
-            env_name=env_name,
-            horizon=horizon,
-            normalizer=normalizer,
-            preprocess_fns=preprocess_fns,
-            max_path_length=max_path_length,
-            max_n_episodes=max_n_episodes,
-            termination_penalty=termination_penalty,
-            use_padding=use_padding,
-            seed=seed,
-            discount=discount,
-            normed=normed
-        )
-        
-    def to(self, device):
-        self.device = device
-        if self.q_network is not None:
-            self.q_network = self.q_network.to(device)
-        if self.v_network is not None:
-            self.v_network = self.v_network.to(device)
-        return self
-    
-    def _compute_value(self, idx):
-        path_ind, start, end = self.indices[idx]
-        
-        observations = self.fields.observations[path_ind, start:end]
-        actions = self.fields.actions[path_ind, start:end]
-        
-        with torch.no_grad():
-            obs_tensor = torch.FloatTensor(observations).to(self.device)
-            act_tensor = torch.FloatTensor(actions).to(self.device)
-            
-            q1, q2 = self.q_network(obs_tensor, act_tensor)
-            q_values = torch.min(q1, q2)
-            
-            v_values = self.v_network(obs_tensor)
-            
-            advantages = q_values - v_values
-            
-            discounts = torch.FloatTensor(self.discounts[:len(advantages)]).to(self.device)
-            advantage_sum = (discounts * advantages).sum()
-            
-            return advantage_sum.cpu().item()
-    
-    def __getitem__(self, idx):
-        batch = super().__getitem__(idx)
-        
-        value = self._compute_value(idx)
-        
-        if self.normed:
-            value = self.normalize_value(value)
-        
-        value = np.array([value], dtype=np.float32)
-        value_batch = ValueBatch(*batch, value)
-        return value_batch 
+# NOTE: The OGBenchValueDataset class below is now obsolete and has been removed.
+# Its functionality is replaced by the more generic 'diffuser/datasets/advantage.py:AdvantageDataset'. 
