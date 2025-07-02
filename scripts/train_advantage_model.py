@@ -18,9 +18,15 @@ except ImportError as e:
     print(f"Original Error: {e}")
     sys.exit(1)
 
-from diffuser.models.values import ValueFunction
+from diffuser.models import ValueFunction
 from diffuser.datasets.advantage import AdvantageDataset # Use the new generic advantage dataset
 from diffuser.models.diffusion import AdvantageValueDiffusion
+
+# Optional wandb import for logging
+try:
+    import wandb
+except ImportError:
+    wandb = None
 
 # -----------------------------------------------------------------------------#
 # ----------------------------------- setup -----------------------------------#
@@ -101,27 +107,33 @@ state_dim = base_dataset.observation_dim
 action_dim = base_dataset.action_dim
 
 q_network = Critic(state_dim, action_dim).to(args.device)
-v_network = ValueCritic(state_dim).to(args.device) # ValueCritic might have different params, adjust if needed
+v_network = ValueCritic(state_dim, 512, 5).to(args.device)  # match IQL training config
 q_network.load_state_dict(torch.load(args.q_path, map_location=args.device))
 v_network.load_state_dict(torch.load(args.v_path, map_location=args.device))
 q_network.eval()
 v_network.eval()
 
-# Create the final AdvantageDataset by wrapping the base dataset
-observation_dim = base_dataset.observation_dim
-action_dim = base_dataset.action_dim
-
-dataset_config = utils.Config(
-    AdvantageDataset,
-    savepath=(args.savepath, 'dataset_config.pkl'),
+# Create the final AdvantageDataset by wrapping the base dataset (avoid pickling)
+dataset = AdvantageDataset(
     base_dataset=base_dataset,
     q_network=q_network,
     v_network=v_network,
     device=args.device,
 )
 
-# Instantiate dataset (AdvantageDataset)
-dataset = dataset_config()
+# save dataset config (lightweight) manually if desired
+# utils.Config will pickle but we avoid unpicklable objects; here we only store parameters
+dataset_cfg_simple = utils.Config(
+    AdvantageDataset,
+    savepath=(args.savepath, 'dataset_config.pkl'),
+    base_dataset='SequenceDataset',
+    q_path=args.q_path,
+    v_path=args.v_path,
+    device=args.device,
+    overwrite=True if hasattr(utils.Config, 'overwrite') else False,
+)
+
+# Obtain dims
 observation_dim = dataset.observation_dim
 action_dim = dataset.action_dim
 
@@ -167,6 +179,11 @@ trainer_config = utils.Config(
     results_folder=args.savepath,
     bucket=args.bucket,
     n_reference=args.n_reference,
+    # WandB options
+    use_wandb=(wandb is not None),
+    wandb_project='advantage_diffuser',
+    wandb_run_name=f'{args.dataset}-{args.prefix}',
+    wandb_config=vars(args),
 )
 
 # -----------------------------------------------------------------------------#
@@ -198,4 +215,8 @@ for i in range(n_epochs):
     print(f'Epoch {i} / {n_epochs} | {args.savepath}')
     trainer.train(n_train_steps=args.n_steps_per_epoch)
 
-print("Training finished.") 
+print("Training finished.")
+
+# Gracefully finish wandb run if enabled
+if 'trainer' in globals() and hasattr(trainer, 'wandb') and trainer.wandb is not None:
+    trainer.wandb.finish() 

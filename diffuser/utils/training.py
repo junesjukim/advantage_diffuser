@@ -61,8 +61,29 @@ class Trainer(object):
         results_folder="./results",
         n_reference=8,
         bucket=None,
+        use_wandb=False,
+        wandb_project="diffuser",
+        wandb_run_name=None,
+        wandb_config=None,
     ):
         super().__init__()
+        self.use_wandb = bool(use_wandb)
+        if self.use_wandb:
+            try:
+                import wandb  # local import to avoid unconditional dependency
+                self.wandb = wandb.init(
+                    project=wandb_project,
+                    name=wandb_run_name,
+                    dir=results_folder,
+                    config=wandb_config if wandb_config is not None else {},
+                )
+            except ImportError:
+                print("[ utils/training ] wandb not installed; continuing without WandB logging.")
+                self.use_wandb = False
+                self.wandb = None
+        else:
+            self.wandb = None
+
         self.model = diffusion_model
         self.ema = EMA(ema_decay)
         self.ema_model = copy.deepcopy(self.model)
@@ -102,6 +123,12 @@ class Trainer(object):
 
         self.reset_parameters()
         self.step = 0
+
+        if self.wandb is not None:
+            try:
+                self.wandb.watch(self.model, log="all", log_freq=1000)
+            except Exception as e:
+                print(f"[ utils/training ] Failed to watch model in wandb: {e}")
 
     def reset_parameters(self):
         self.ema_model.load_state_dict(self.model.state_dict())
@@ -145,6 +172,17 @@ class Trainer(object):
                     f"{self.step}: {loss:8.4f} | {infos_str} | t: {timer():8.4f}",
                     flush=True,
                 )
+
+                if self.wandb is not None:
+                    log_dict = {"train/loss": loss.item(), "step": self.step}
+                    for k, v in infos.items():
+                        if torch.is_tensor(v):
+                            v = v.item()
+                        log_dict[f"train/{k}"] = v
+                    try:
+                        self.wandb.log(log_dict, step=self.step)
+                    except Exception as e:
+                        print(f"[ utils/training ] WandB log failed: {e}")
 
             # if self.step == 0 and self.sample_freq:
             #    self.render_reference(self.n_reference)
