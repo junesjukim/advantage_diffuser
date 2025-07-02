@@ -158,3 +158,5 @@ __pycache__
 make_tasks.py
 tasks*.txt
 models
+
+./iql-pytorch/wandb
