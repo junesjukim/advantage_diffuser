@@ -160,3 +160,4 @@ tasks*.txt
 models
 
 ./iql-pytorch/wandb
+wandb
