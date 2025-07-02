@@ -524,4 +524,20 @@ class ValueDiffusion(GaussianDiffusion):
         return self.model(x, cond, t)
 
 
+# -----------------------------------------------------------------------------#
+#                        Advantage Value Diffusion Wrapper                      #
+# -----------------------------------------------------------------------------#
+
+
+class AdvantageValueDiffusion(ValueDiffusion):
+    """Thin wrapper around ValueDiffusion used for advantage learning.
+
+    Keeps the code structure identical to separate value / advantage trainers
+    while re-using the same implementation. No additional behaviour is needed,
+    but a distinct class name simplifies config and import paths.
+    """
+
+    pass
+
+
 # diffuser/models/diffusion.py (통합 버전)

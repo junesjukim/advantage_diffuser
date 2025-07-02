@@ -33,7 +33,7 @@ class Parser(utils.Parser):
     horizon: int = 32
     batch_size: int = 256
     learning_rate: float = 2e-4
-    normalizer: str = 'LimitsNormalizer'
+    normalizer: str = 'DebugNormalizer'
     normed: bool = True
     use_padding: bool = True
     max_path_length: int = 1000
@@ -108,18 +108,19 @@ q_network.eval()
 v_network.eval()
 
 # Create the final AdvantageDataset by wrapping the base dataset
+observation_dim = base_dataset.observation_dim
+action_dim = base_dataset.action_dim
+
 dataset_config = utils.Config(
     AdvantageDataset,
     savepath=(args.savepath, 'dataset_config.pkl'),
-    # Pass the required arguments to AdvantageDataset
     base_dataset=base_dataset,
     q_network=q_network,
     v_network=v_network,
     device=args.device,
-    # Pass through other dataset-related args if needed by base_dataset
-    # (already configured in base_dataset)
 )
 
+# Instantiate dataset (AdvantageDataset)
 dataset = dataset_config()
 observation_dim = dataset.observation_dim
 action_dim = dataset.action_dim
