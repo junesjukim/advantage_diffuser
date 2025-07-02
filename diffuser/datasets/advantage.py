@@ -1,6 +1,10 @@
 import torch
 from torch.utils.data import Dataset
 import numpy as np
+from collections import namedtuple
+
+# global namedtuple definitions (picklable by DataLoader)
+BatchAdv = namedtuple("BatchAdv", "trajectories conditions values")
 
 class AdvantageDataset(Dataset):
     """
@@ -10,7 +14,7 @@ class AdvantageDataset(Dataset):
     OgbenchDataset for OGBench) and pre-computes the advantage A(s,a) = Q(s,a) - V(s) 
     for all state-action pairs using pre-trained Q and V networks.
     """
-    def __init__(self, base_dataset, q_network, v_network, device='cuda:0', eps=1e-3):
+    def __init__(self, base_dataset, q_network, v_network, device='cuda:0', eps=1e-3, discount=0.99):
         """
         Args:
             base_dataset: An initialized dataset object (e.g., SequenceDataset).
@@ -18,11 +22,13 @@ class AdvantageDataset(Dataset):
             v_network: A pre-trained V-network model.
             device: The device to perform computations on.
             eps: Epsilon for IQL normalization.
+            discount: Discount factor for computing discounted advantages.
         """
         self.base_dataset = base_dataset
         self.q_network = q_network.to(device)
         self.v_network = v_network.to(device)
         self.device = device
+        self.discount = discount
         
         # Compute normalization statistics (IQL-style z-score) from base_dataset
         mean, std = self._compute_stats(base_dataset, eps=eps)
@@ -33,7 +39,7 @@ class AdvantageDataset(Dataset):
         # This aligns with how the original Value-based dataset stored returns,
         # allowing for minimal changes in the training loop.
         print("Pre-computing advantages for the dataset...")
-        self.values = self._precompute_advantages()
+        self.advantages = self._precompute_advantages()
         print("...Advantages pre-computation complete.")
 
     def _precompute_advantages(self):
@@ -77,11 +83,11 @@ class AdvantageDataset(Dataset):
 
             with torch.no_grad():
                 q1, q2 = self.q_network(observations, actions)
-                q_values = torch.min(q1, q2)
-                v_values = self.v_network(observations)
-                advantages = q_values - v_values
-            
-            all_advantages.append(advantages.cpu().numpy())
+                q_values = torch.min(q1, q2)  # [H,1]
+                v_values = self.v_network(observations)  # [H,1]
+                advantages = (q_values - v_values).cpu().numpy().squeeze(-1)  # shape (H,)
+
+            all_advantages.append(advantages)
         
         # The base_dataset has a list of numpy arrays, we keep the same format
         return all_advantages
@@ -96,21 +102,23 @@ class AdvantageDataset(Dataset):
         # the same structure as the base dataset.
         data = self.base_dataset[idx]
 
-        # Attach advantage values depending on data structure
+        # We will convert any incoming sample to BatchAdv to ensure picklability
+
         if isinstance(data, dict):
-            data['values'] = self.values[idx]
-            return data
+            trajectories = np.concatenate([data['actions'], data['observations']], axis=-1)
+            conditions = {0: data['observations'][0]}
         else:
-            # data is a namedtuple (e.g., Batch or ValueBatch)
-            if hasattr(data, 'values'):
-                # existing namedtuple has values field (unlikely), replace
-                data = data._replace(values=self.values[idx])
-            else:
-                # create new namedtuple including 'values'
-                from collections import namedtuple
-                DataWithVal = namedtuple(type(data).__name__, data._fields + ('values',))
-                data = DataWithVal(*data, self.values[idx])
-            return data
+            # data is SequenceDataset.Batch
+            trajectories = data.trajectories
+            conditions = data.conditions
+
+        # compute discounted scalar advantage on the fly
+        adv_seq = self.advantages[idx]
+        discounts = self.discount ** np.arange(len(adv_seq))
+        disc_adv = float((discounts * adv_seq).sum())
+        value_scalar = np.array([disc_adv], dtype=np.float32)
+
+        return BatchAdv(trajectories, conditions, value_scalar)
 
     @property
     def observation_dim(self):
