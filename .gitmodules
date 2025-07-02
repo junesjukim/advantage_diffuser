@@ -1,3 +1,0 @@
-[submodule "iql-pytorch"]
-	path = iql-pytorch
-	url = https://github.com/Manchery/iql-pytorch
