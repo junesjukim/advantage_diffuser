@@ -99,12 +99,12 @@ class OgbenchDataset(SequenceDataset):
         return episodes
     
     def get_conditions(self, observations):
-        '''
-            conditions are supplied normalized
-        '''
+        """
+        OGBench 데이터셋 학습/계획 시 goal(마지막 observation)을 조건에 포함하지 않습니다.
+        현재 시점 observation(0 step)만 조건으로 사용합니다.
+        """
         return {
-            0: observations[0],
-            self.horizon - 1: observations[-1]
+            0: observations[0]
         }
     
     def normalize(self, keys=['observations', 'actions']):

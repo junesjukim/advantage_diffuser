@@ -175,8 +175,6 @@ for run_id in range(args.n_runs):
 
     while not done and step < args.max_episode_length:
         conditions = {0: obs}
-        if is_ogbench:
-            conditions[diffusion.horizon - 1] = goal
 
         action, samples = policy(conditions, batch_size=args.n_samples, verbose=args.verbose)
         
