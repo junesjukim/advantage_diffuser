@@ -113,6 +113,14 @@ class AdvantageDataset(Dataset):
             conditions = data.conditions
 
         # compute discounted scalar advantage on the fly
+        print("self.advantages[idx]: ", self.advantages[idx])
+        print("len(self.advantages[idx]): ", len(self.advantages[idx]))
+        print("len(trajectories): ", len(trajectories))
+        print("len(conditions): ", len(conditions))
+        print("len(self.advantages): ", len(self.advantages))
+        print("len(self.base_dataset): ", len(self.base_dataset))
+        print("len(self.base_dataset[idx]): ", len(self.base_dataset[idx]))
+        print("len(self.base_dataset[idx].trajectories): ", len(self.base_dataset[idx].trajectories))
         adv_seq = self.advantages[idx]
         discounts = self.discount ** np.arange(len(adv_seq))
         disc_adv = float((discounts * adv_seq).sum())
@@ -137,11 +145,23 @@ class AdvantageDataset(Dataset):
         ReplayBuffer.normalize_states. Prefer fast path using `fields.observations` if
         present (SequenceDataset). Fallback to iteration otherwise."""
 
+        # Fast path: SequenceDataset (or similar) provides the full observation tensor.
+        # Exclude zero-padding by masking with each episode's actual length.
         if hasattr(base_dataset, 'fields') and hasattr(base_dataset.fields, 'observations'):
-            obs = base_dataset.fields.observations  # shape (n_eps, max_len, obs_dim)
-            obs_flat = obs.reshape(-1, obs.shape[-1])
-            mean = obs_flat.mean(axis=0, keepdims=True)
-            std = obs_flat.std(axis=0, keepdims=True) + eps
+            obs = base_dataset.fields.observations  # (n_eps, max_len, obs_dim)
+
+            # If path_lengths is available we can build a mask to drop padded steps.
+            if hasattr(base_dataset, 'path_lengths'):
+                lengths = np.asarray(base_dataset.path_lengths)  # (n_eps,)
+                max_len = obs.shape[1]
+                mask = np.arange(max_len)[None, :] < lengths[:, None]  # True for valid timesteps
+                obs_valid = obs[mask]  # shape (total_valid_steps, obs_dim)
+            else:
+                # Fallback: include all timesteps (may contain padding)
+                obs_valid = obs.reshape(-1, obs.shape[-1])
+
+            mean = obs_valid.mean(axis=0, keepdims=True)
+            std = obs_valid.std(axis=0, keepdims=True) + eps
             return mean, std
 
         # Fallback: iterate through dataset (slower)
