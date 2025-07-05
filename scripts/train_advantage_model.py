@@ -165,6 +165,10 @@ diffusion_config = utils.Config(
 )
 
 # Trainer
+# First, sanitize the args dict so that all values are pickle-friendly (e.g., primitives or strings)
+_simple_types = (int, float, bool, str, type(None))
+wandb_cfg_safe = {k: (v if isinstance(v, _simple_types) else str(v)) for k, v in vars(args).items()}
+
 trainer_config = utils.Config(
     utils.Trainer,
     savepath=(args.savepath, 'trainer_config.pkl'),
@@ -183,7 +187,7 @@ trainer_config = utils.Config(
     use_wandb=(wandb is not None),
     wandb_project='advantage_diffuser',
     wandb_run_name=f'{args.dataset}-{args.prefix}',
-    wandb_config=vars(args),
+    wandb_config=wandb_cfg_safe,
 )
 
 # -----------------------------------------------------------------------------#
