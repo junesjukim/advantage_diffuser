@@ -8,13 +8,13 @@
 ###############################################################################
 
 ######################## 사용자 설정 ##########################################
-PREFIX="unified_test"            # 로그 경로 구분용 접두어
+PREFIX="advantage_test"            # 로그 경로 구분용 접두어
 PREFIX_PATH="diffusion_plan/${PREFIX}"
 LOG_BASE="logs"                 # diffuser 기본 로그 폴더
 OUTPUT_DIR="output/diffusion_plan_${PREFIX}"
 
 # GPU 장치 배열 (여러 개 지정 가능)
-declare -a GPU_DEVICES=(0 1)
+declare -a GPU_DEVICES=(0 1 2 3)
 
 # 테스트할 D4RL 데이터셋 목록
 declare -a DATASETS=(
@@ -36,7 +36,7 @@ N_DIFF_STEPS=16
 
 # Seed 설정 -------------------------------------------------------------------
 TRAIN_SEED=10
-VALUE_SEED=10
+VALUE_SEED=0
 PLAN_SEEDS=(0)   # 테스트용 planning seed 3개
 
 # 체크포인트 경로(사용 전에 수정 필요) ---------------------------------------
@@ -44,7 +44,7 @@ PLAN_SEEDS=(0)   # 테스트용 planning seed 3개
 # DIFFUSION_PATH="f:diffusion/flowmatcher_hopper_H32_T16_S10"
 # VALUE_PATH="f:values/value_hopper_H32_T16_S10"
 DIFFUSION_PATH="f:diffusion/diffusion_peF_repenkit_H32_T16_S${TRAIN_SEED}"
-VALUE_PATH="f:values/diffusion_repenkit_H32_T16_S${VALUE_SEED}_d0.99"
+VALUE_PATH="f:advantages/test_3_H32_T16_S${VALUE_SEED}_d0.99"
 ###############################################################################
 
 # 디렉터리 준비
@@ -77,6 +77,7 @@ for idx in "${!DATASETS[@]}"; do
       --seed ${PLAN_SEED} \
       --n_sample_timesteps ${NST} \
       --prefix "${PREFIX}/TR${TRAIN_SEED}_VS${VALUE_SEED}_PS${PLAN_SEED}" \
+      --wandb_project "advantage_test" \
       > "${LOG_FILE}" 2>&1 &
 
     pids+=("$!")

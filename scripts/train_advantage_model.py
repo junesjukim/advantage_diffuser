@@ -35,14 +35,6 @@ except ImportError:
 class Parser(utils.Parser):
     dataset: str = 'hopper-medium-expert-v2'
     config: str = None # For auto-detection
-    # --- Value learning specific parameters ---
-    horizon: int = 32
-    batch_size: int = 256
-    learning_rate: float = 2e-4
-    normalizer: str = 'DebugNormalizer'
-    normed: bool = True
-    use_padding: bool = True
-    max_path_length: int = 1000
     # --- Paths to pre-trained IQL networks (NOW REQUIRED ARGUMENTS) ---
     q_path: str = "path/to/your/critic.pth"
     v_path: str = "path/to/your/value.pth"
@@ -121,21 +113,52 @@ dataset = AdvantageDataset(
     device=args.device,
 )
 
-# save dataset config (lightweight) manually if desired
-# utils.Config will pickle but we avoid unpicklable objects; here we only store parameters
+# -----------------------------------------------------------------------------#
+# Save dataset config identical to train_value_model.py ------------------------#
+# -----------------------------------------------------------------------------#
+# For downstream compatibility (e.g., utils.load_diffusion), we save the dataset
+# configuration using the same schema that `train_value_model.py` employs. This
+# means we point to the *loader* class (typically `SequenceDataset`) instead of
+# the on-the-fly `AdvantageDataset` wrapper.  Any advantage-specific details are
+# captured in the trained model checkpoints and do **not** need to be part of
+# the dataset config.
+
+# utils.Config automatically pickles itself at creation time, so simply
+# instantiating it here is sufficient.
+
 dataset_cfg_simple = utils.Config(
-    AdvantageDataset,
-    savepath=(args.savepath, 'dataset_config.pkl'),
-    base_dataset='SequenceDataset',
-    q_path=args.q_path,
-    v_path=args.v_path,
-    device=args.device,
-    overwrite=True if hasattr(utils.Config, 'overwrite') else False,
+    args.loader,  # e.g. 'datasets.sequence.SequenceDataset'
+    savepath=(args.savepath, "dataset_config.pkl"),
+    # --- identical kwargs to train_value_model.py ---------------------------#
+    env=args.dataset,
+    horizon=args.horizon,
+    normalizer=args.normalizer,
+    preprocess_fns=args.preprocess_fns,
+    use_padding=args.use_padding,
+    max_path_length=args.max_path_length,
+    # value-specific extras (kept for parity) --------------------------------#
+    discount=args.discount,
+    termination_penalty=args.termination_penalty,
+    normed=args.normed,
 )
 
 # Obtain dims
 observation_dim = dataset.observation_dim
 action_dim = dataset.action_dim
+
+# -----------------------------------------------------------------------------#
+# -------------------------- renderer (for compatibility) ----------------------#
+# -----------------------------------------------------------------------------#
+
+# Save a renderer config identical to train_value_model so that utils.load_diffusion
+# can successfully load this experiment later (it expects `render_config.pkl`).
+# For advantage training we don't require rendering, therefore we simply reuse
+# the generic renderer specified by the config with the target env name.
+render_config = utils.Config(
+    args.renderer,
+    savepath=(args.savepath, "render_config.pkl"),
+    env=args.dataset,
+)
 
 # -----------------------------------------------------------------------------#
 # ------------------------------ model & trainer ------------------------------#

@@ -7,6 +7,23 @@ import time
 import subprocess
 import imageio
 import wandb
+import gym  # 렌더 모드를 지정하여 새 환경을 만들기 위해 추가
+
+# -----------------------------------------------------------------------------#
+# ---------------------- headless EGL / Xvfb setup ----------------------------#
+# -----------------------------------------------------------------------------#
+# dm_control‐based environments (e.g. kitchen) require a valid OpenGL context.  
+# We enforce EGL backend **before** MuJoCo is imported anywhere.
+
+if 'MUJOCO_GL' not in os.environ:
+    os.environ['MUJOCO_GL'] = 'egl'  # use headless EGL rendering
+
+# Launch a virtual X-server when DISPLAY is absent (common on headless servers)
+if 'DISPLAY' not in os.environ:
+    subprocess.Popen(['Xvfb', ':100', '-screen', '0', '1024x768x24', '-ac'])
+    os.environ['DISPLAY'] = ':100.0'
+
+# -----------------------------------------------------------------------------#
 
 import diffuser.sampling as sampling
 import diffuser.utils as utils
@@ -77,8 +94,9 @@ def setup_headless_display():
         subprocess.Popen(['Xvfb', ':100', '-screen', '0', '1024x768x24', '-ac'])
         os.environ['DISPLAY'] = ':100.0'
         os.environ['MUJOCO_GL'] = 'egl'
+        os.environ['MUJOCO_EGL_NO_GLX'] = '1'
+        os.environ['MUJOCO_EGL_NO_X11'] = '1'
         os.environ['PYOPENGL_PLATFORM'] = 'egl'
-
 
 def run_episode(env, policy, args, logger=None, diffusion_exp=None, value_exp=None):
     """Execute a single episode and return collected metrics."""
@@ -94,7 +112,8 @@ def run_episode(env, policy, args, logger=None, diffusion_exp=None, value_exp=No
         setup_headless_display()
         video_path = os.path.join(args.savepath, 'episode.mp4')
         video_writer = imageio.get_writer(video_path, fps=30)
-
+        print(f"generated video writer: {video_writer}")
+        print(f"video_path: {video_path}")
     total_reward = 0.0
 
     for t in range(args.max_episode_length):
@@ -135,7 +154,21 @@ def run_episode(env, policy, args, logger=None, diffusion_exp=None, value_exp=No
         wandb.log(log_dict, step=t)
 
         if video_writer:
-            video_writer.append_data(env.render())
+            # MuJoCoRenderer 를 이용해 현재 observation 으로부터 이미지를 생성
+            try:
+                if args.dataset in ['kitchen-complete-v0', 'kitchen-partial-v0']:
+                    # MuJoCo 직접 렌더링: width=640, height=480, 원하는 카메라 이름 사용
+                    cid = 0                               # fixed 카메라
+                    env.sim.model.cam_fovy[cid] = 80.0    # 시야각을 70도로 확대
+                    env.sim.model.cam_pos [cid][2] = 2.2
+                    frame = env.sim.render(1920, 2560, camera_id = cid)  
+                    video_writer.append_data(frame)
+                elif args.dataset in ['pen-cloned-v0', 'pen-human-v0', 'pen-expert-v0']:
+                    frame = env.sim.render(2560, 1920, camera_name = 'fixed')  
+                    frame = frame[::-1]
+                    video_writer.append_data(frame)
+            except Exception as e:
+                print(f"[warning] renderer.render failed: {e}")
 
         if done:
             break

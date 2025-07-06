@@ -9,9 +9,9 @@
 ###############################################################################
 
 ######################## 실험별 사용자 설정 ###################################
-PREFIX="test_2"               # 실험 구분용 접두어(폴더 이름에 사용)
+PREFIX="test_3"               # 실험 구분용 접두어(폴더 이름에 사용)
 N_DIFF_STEPS=16                 # --n_diffusion_steps 하이퍼파라미터
-SEEDS=(0 1)                      # 여러 시드 사용 시 예: (20 42 77)
+SEEDS=(0)                      # 여러 시드 사용 시 예: (20 42 77)
 GPU_LIST=(0 1 2 3)                  # 사용하고자 하는 GPU ID 리스트
 DATASETS=(                      # 학습할 D4RL 환경 리스트
   "pen-cloned-v0"
@@ -91,7 +91,7 @@ run_job () {
         --horizon 32 \
         --n_diffusion_steps "${N_DIFF_STEPS}" \
         --seed "${SEED}" \
-        --normalizer 'DebugNormalizer' \
+        --normalizer "DebugNormalizer" \
         --prefix "advantages/${PREFIX}" \
         --config config.d4rl \
         > "${LOG_FILE}" 2>&1 &

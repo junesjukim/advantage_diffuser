@@ -14,7 +14,7 @@ class AdvantageDataset(Dataset):
     OgbenchDataset for OGBench) and pre-computes the advantage A(s,a) = Q(s,a) - V(s) 
     for all state-action pairs using pre-trained Q and V networks.
     """
-    def __init__(self, base_dataset, q_network, v_network, device='cuda:0', eps=1e-3, discount=0.99):
+    def __init__(self, base_dataset, q_network=None, v_network=None, device='cuda:0', eps=1e-3, discount=0.99, seed=None, **kwargs):
         """
         Args:
             base_dataset: An initialized dataset object (e.g., SequenceDataset).
@@ -23,10 +23,45 @@ class AdvantageDataset(Dataset):
             device: The device to perform computations on.
             eps: Epsilon for IQL normalization.
             discount: Discount factor for computing discounted advantages.
+            seed: Unused but accepted to maintain compatibility with the generic
+                Config instantiation interface which may inject a `seed` keyword.
+            **kwargs: Additional unused keyword arguments for forward compatibility.
         """
+        # -------------------------------------------------------------
+        # Support deserialization: if `base_dataset` is passed as a str
+        # (common when loading from a saved Config), we dynamically
+        # instantiate the corresponding dataset class with the kwargs
+        # that were saved alongside.
+        # -------------------------------------------------------------
+
+        if isinstance(base_dataset, str):
+            from diffuser.utils.config import import_class
+
+            # Allow plain class name (e.g. 'SequenceDataset') or full path
+            module_path = (
+                base_dataset if "." in base_dataset else f"datasets.{base_dataset}"
+            )
+            DatasetCls = import_class(module_path)
+
+            # Filter kwargs to those typically accepted by SequenceDataset
+            allowed_keys = {
+                "env",
+                "env_name",
+                "horizon",
+                "normalizer",
+                "preprocess_fns",
+                "use_padding",
+                "max_path_length",
+            }
+            dataset_kwargs = {k: v for k, v in kwargs.items() if k in allowed_keys}
+
+            base_dataset = DatasetCls(**dataset_kwargs)
+
         self.base_dataset = base_dataset
-        self.q_network = q_network.to(device)
-        self.v_network = v_network.to(device)
+        if q_network is not None:
+            self.q_network = q_network.to(device)
+        if v_network is not None:
+            self.v_network = v_network.to(device)
         self.device = device
         self.discount = discount
         
@@ -39,7 +74,10 @@ class AdvantageDataset(Dataset):
         # This aligns with how the original Value-based dataset stored returns,
         # allowing for minimal changes in the training loop.
         print("Pre-computing advantages for the dataset...")
-        self.advantages = self._precompute_advantages()
+        if q_network is not None and v_network is not None:
+            self.advantages = self._precompute_advantages()
+        else:
+            self.advantages = None
         print("...Advantages pre-computation complete.")
 
     def _precompute_advantages(self):
@@ -180,3 +218,23 @@ class AdvantageDataset(Dataset):
         mean = obs_concat.mean(axis=0, keepdims=True)
         std = obs_concat.std(axis=0, keepdims=True) + eps
         return mean, std
+
+    # ------------------------------------------------------------------#
+    # Torch-style device transfer helper (for utils.Config compatibility)
+    # ------------------------------------------------------------------#
+
+    def to(self, device):
+        """Move internal torch tensors / networks to `device` and store it.
+
+        `utils.Config` calls `.to(device)` when a `device` kwarg is provided.
+        Making this a no-op for numpy parts keeps the interface stable.
+        """
+        self.device = device
+        if hasattr(self, "state_mean"):
+            self.state_mean = self.state_mean.to(device)
+            self.state_std = self.state_std.to(device)
+        if hasattr(self, "q_network"):
+            self.q_network = self.q_network.to(device)
+        if hasattr(self, "v_network"):
+            self.v_network = self.v_network.to(device)
+        return self

@@ -1,4 +1,2 @@
-PID pen-cloned-v0 seed-0: 47545
-PID kitchen-partial-v0 seed-0: 47558
-PID pen-cloned-v0 seed-1: 47571
-PID kitchen-partial-v0 seed-1: 47585
+PID pen-cloned-v0 seed-0: 9967
+PID kitchen-partial-v0 seed-0: 9980
