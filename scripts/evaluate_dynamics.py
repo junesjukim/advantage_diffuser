@@ -148,6 +148,12 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
         print("np.linalg.norm(predicted_next_obs): ", np.linalg.norm(predicted_next_obs))
         print("np.linalg.norm(real_next_obs): ", np.linalg.norm(real_next_obs))
 
+        # 상위 5개 에러 기여도 차원 및 값 출력
+        top5_indices = np.argsort(error_proportion_per_dim)[-5:][::-1]
+        print(f"Top 5 error proportions at step {t}:")
+        for i in top5_indices:
+            print(f"  - Dim {i:02d}: {error_proportion_per_dim[i]:.4f}")
+
         dynamics_data = {
             'pred_s_next': predicted_next_obs,
             'real_s_next': real_next_obs,
