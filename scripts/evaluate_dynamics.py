@@ -9,6 +9,7 @@ import wandb
 import gym
 import numpy as np
 import torch
+import cv2
 
 # -----------------------------------------------------------------------------#
 # ---------------------- headless EGL / Xvfb setup ----------------------------#
@@ -136,6 +137,11 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
         predicted_next_obs = samples.observations[0, 1]
         dynamics_error_vector = (predicted_next_obs - real_next_obs)
         dynamics_error_norm = np.linalg.norm(dynamics_error_vector)
+        
+        # 각 차원별 에러 기여도 계산
+        total_squared_error = dynamics_error_norm**2
+        squared_error_per_dim = dynamics_error_vector**2
+        error_proportion_per_dim = squared_error_per_dim / (total_squared_error + 1e-8)
 
         print(f"observations at step {t}:")
         print("np.linalg.norm(dynamics_error_vector): ", np.linalg.norm(dynamics_error_vector))
@@ -149,7 +155,7 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
             'error_norm': dynamics_error_norm,
         }
         all_dynamics_data.append(dynamics_data)
-
+        
         observation = real_next_obs
         total_reward += reward
 
@@ -168,7 +174,8 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
         # Log dynamics error for each dimension
         for i in range(obs_dim):
             log_dict[f'dyn_err_dim_{i}'] = float(dynamics_error_vector[i])
-
+            log_dict[f'dyn_err_proportion_dim_{i}'] = float(error_proportion_per_dim[i])
+            
         # diffuser 모드일 때만 세부 값 로깅
         if args.benchmark != 'ogbench':
             log_dict.update({
@@ -181,20 +188,37 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
         if video_writer:
             # MuJoCoRenderer 를 이용해 현재 observation 으로부터 이미지를 생성
             try:
+                frame = None
                 if args.dataset in ['kitchen-complete-v0', 'kitchen-partial-v0']:
                     # MuJoCo 직접 렌더링: width=640, height=480, 원하는 카메라 이름 사용
                     cid = 0                               # fixed 카메라
                     env.sim.model.cam_fovy[cid] = 80.0    # 시야각을 70도로 확대
                     env.sim.model.cam_pos [cid][2] = 2.2
-                    frame = env.sim.render(1920, 2560, camera_id = cid)  
-                    video_writer.append_data(frame)
+                    frame = env.sim.render(1920, 2560, camera_id = cid)
                 elif args.dataset in ['pen-cloned-v0', 'pen-human-v0', 'pen-expert-v0']:
-                    frame = env.sim.render(2560, 1920, camera_name = 'fixed')  
+                    frame = env.sim.render(2560, 1920, camera_name = 'fixed')
                     frame = frame[::-1]
-                    video_writer.append_data(frame)
                 else:
                     frame = env.render()
+                
+                if frame is not None:
+                    # OpenCV는 BGR을 사용하므로 RGB -> BGR 변환 후 텍스트 추가
+                    frame = frame.copy() # read-only buffer일 수 있으므로 복사
+                    text = f"t = {t}"
+                    font_scale = 2
+                    font_thickness = 3
+                    font_face = cv2.FONT_HERSHEY_SIMPLEX
+                    text_size, _ = cv2.getTextSize(text, font_face, font_scale, font_thickness)
+                    
+                    # 텍스트 위치 (우측 상단)
+                    text_x = frame.shape[1] - text_size[0] - 30
+                    text_y = text_size[1] + 30
+                    
+                    # 텍스트 추가
+                    cv2.putText(frame, text, (text_x, text_y), font_face, font_scale, (255, 255, 255), font_thickness, cv2.LINE_AA)
+                    
                     video_writer.append_data(frame)
+
             except Exception as e:
                 print(f"[warning] renderer.render failed: {e}")
 
@@ -230,7 +254,7 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
     }
     if 'success' in info:
         metrics['success'] = info['success']
-
+    
     # ogbench의 단일 성공(boolean)도 별도 기록
     if 'success' in metrics:
         wandb.log({'success': metrics['success']})
