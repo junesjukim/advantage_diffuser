@@ -30,6 +30,7 @@ import diffuser.sampling as sampling
 import diffuser.utils as utils
 from diffuser.models.diffusion import set_model_mode
 import ogbench
+import imageio
 
 conda_env = os.environ.get("CONDA_DEFAULT_ENV", "Conda environment not detected")
 print("Active conda environment:", conda_env)
@@ -44,10 +45,11 @@ class Parser(utils.Parser):
 
     dataset: str = "walker2d-medium-replay-v2"
     config: str = "config.locomotion"
-    wandb_project: str = "diffuser_dynamics_evaluation_obdim"
+    wandb_project: str = "diffuser_dynamics_video"
 
     # unified extras
     benchmark: str = "d4rl"  # 'd4rl' | 'ogbench'
+    save_video: bool = False
 
 
 args = Parser().parse_args("plan")
@@ -82,6 +84,16 @@ wandb.config.update({
 # ------------------------------ helper functions -----------------------------#
 # -----------------------------------------------------------------------------#
 
+def setup_headless_display():
+    """Launch Xvfb if DISPLAY is not available (for off-screen rendering)."""
+    if 'DISPLAY' not in os.environ:
+        subprocess.Popen(['Xvfb', ':100', '-screen', '0', '1024x768x24', '-ac'])
+        os.environ['DISPLAY'] = ':100.0'
+        os.environ['MUJOCO_GL'] = 'egl'
+        os.environ['MUJOCO_EGL_NO_GLX'] = '1'
+        os.environ['MUJOCO_EGL_NO_X11'] = '1'
+        os.environ['PYOPENGL_PLATFORM'] = 'egl'
+
 def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
     """Execute a single episode, evaluate dynamics, and return metrics."""
 
@@ -92,7 +104,14 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
 
     total_reward = 0.0
     all_dynamics_data = []
-    
+
+    # video setup
+    video_writer = None
+    if args.save_video:
+        setup_headless_display()
+        video_path = os.path.join(args.savepath, 'episode.mp4')
+        video_writer = imageio.get_writer(video_path, fps=30)
+
     dataset = diffusion_exp.dataset
     obs_dim = dataset.observation_dim
 
@@ -110,14 +129,14 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
             done = terminated or truncated
         else: # classic gym API
             real_next_obs, reward, done, info = step_out
-    
+
         # Dynamics evaluation
         # samples는 이미 가장 가치가 높은 궤적이 인덱스 0에 오도록 정렬되어 있습니다.
         # 따라서 첫 번째 궤적(`[0]`)의 다음 observation(`[1]`)을 예측값으로 사용합니다.
         predicted_next_obs = samples.observations[0, 1]
         dynamics_error_vector = (predicted_next_obs - real_next_obs)
         dynamics_error_norm = np.linalg.norm(dynamics_error_vector)
-        
+
         print(f"observations at step {t}:")
         print("np.linalg.norm(dynamics_error_vector): ", np.linalg.norm(dynamics_error_vector))
         print("np.linalg.norm(predicted_next_obs): ", np.linalg.norm(predicted_next_obs))
@@ -130,7 +149,7 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
             'error_norm': dynamics_error_norm,
         }
         all_dynamics_data.append(dynamics_data)
-        
+
         observation = real_next_obs
         total_reward += reward
 
@@ -146,6 +165,10 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
             'total_reward': total_reward,
             'dynamics_error_norm': dynamics_error_norm,
         }
+        # Log dynamics error for each dimension
+        for i in range(obs_dim):
+            log_dict[f'dyn_err_dim_{i}'] = float(dynamics_error_vector[i])
+
         # diffuser 모드일 때만 세부 값 로깅
         if args.benchmark != 'ogbench':
             log_dict.update({
@@ -154,6 +177,26 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
             })
 
         wandb.log(log_dict, step=t)
+
+        if video_writer:
+            # MuJoCoRenderer 를 이용해 현재 observation 으로부터 이미지를 생성
+            try:
+                if args.dataset in ['kitchen-complete-v0', 'kitchen-partial-v0']:
+                    # MuJoCo 직접 렌더링: width=640, height=480, 원하는 카메라 이름 사용
+                    cid = 0                               # fixed 카메라
+                    env.sim.model.cam_fovy[cid] = 80.0    # 시야각을 70도로 확대
+                    env.sim.model.cam_pos [cid][2] = 2.2
+                    frame = env.sim.render(1920, 2560, camera_id = cid)  
+                    video_writer.append_data(frame)
+                elif args.dataset in ['pen-cloned-v0', 'pen-human-v0', 'pen-expert-v0']:
+                    frame = env.sim.render(2560, 1920, camera_name = 'fixed')  
+                    frame = frame[::-1]
+                    video_writer.append_data(frame)
+                else:
+                    frame = env.render()
+                    video_writer.append_data(frame)
+            except Exception as e:
+                print(f"[warning] renderer.render failed: {e}")
 
         if done:
             break
@@ -170,6 +213,9 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
         )
         wandb.save(save_path)
 
+    if video_writer:
+        video_writer.close()
+        wandb.log({'episode_video': wandb.Video(video_path, fps=30, format="mp4")})
 
     if logger and diffusion_exp and value_exp:
         logger.finish(t, score, total_reward, done, diffusion_exp, value_exp)
@@ -260,7 +306,7 @@ if args.benchmark == 'ogbench':
     assert ogbench is not None, "ogbench package not available"
     env, _, _ = ogbench.make_env_and_datasets(
         args.dataset,
-        render_mode=None, # no rendering for dynamics evaluation
+        render_mode='rgb_array' if args.save_video else None, # no rendering for dynamics evaluation
         width=640,
         height=480
     )

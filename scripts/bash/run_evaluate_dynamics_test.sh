@@ -14,17 +14,17 @@ LOG_BASE="logs"                 # diffuser 기본 로그 폴더
 OUTPUT_DIR="output/diffusion_plan_${PREFIX}"
 
 # GPU 장치 배열 (여러 개 지정 가능)
-declare -a GPU_DEVICES=(0 1)
+declare -a GPU_DEVICES=(0 1 2 3)
 
 # 테스트할 D4RL 데이터셋 목록
 declare -a DATASETS=(
-  "pen-cloned-v0"
+  #"pen-cloned-v0"
   "kitchen-partial-v0"
 )
 
 # 각 DATASET 별 n_sample_timesteps 설정 (DATASETS와 길이 동일)
 declare -a N_SAMPLE_TIMESTEPS=(
-  16
+  #16
   16
 )
 
@@ -37,7 +37,7 @@ N_DIFF_STEPS=16
 # Seed 설정 -------------------------------------------------------------------
 TRAIN_SEED=10
 VALUE_SEED=10
-PLAN_SEEDS=(0)   # 테스트용 planning seed 3개
+PLAN_SEEDS=(1)   # 테스트용 planning seed 15개
 
 # 체크포인트 경로(사용 전에 수정 필요) ---------------------------------------
 # Example:
@@ -64,8 +64,9 @@ for idx in "${!DATASETS[@]}"; do
     echo "[실행] GPU ${GPU} | Dataset ${DATASET} | PlanSeed ${PLAN_SEED}"
     echo "  로그 -> ${LOG_FILE}"
 
-    OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU} \
+    CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=24 CUDA_VISIBLE_DEVICES=${GPU} \
     python scripts/evaluate_dynamics.py \
+      --batch_size 64 \
       --dataset "${DATASET}" \
       --logbase "${LOG_BASE}" \
       --benchmark d4rl \
@@ -76,6 +77,7 @@ for idx in "${!DATASETS[@]}"; do
       --seed ${PLAN_SEED} \
       --n_sample_timesteps ${NST} \
       --prefix "${PREFIX}/TR${TRAIN_SEED}_VS${VALUE_SEED}_PS${PLAN_SEED}" \
+      --save_video \
       > "${LOG_FILE}" 2>&1 &
 
     pids+=("$!")
