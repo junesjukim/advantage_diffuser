@@ -37,7 +37,7 @@ N_DIFF_STEPS=16
 # Seed 설정 -------------------------------------------------------------------
 TRAIN_SEED=10
 VALUE_SEED=10
-PLAN_SEEDS=(1)   # 테스트용 planning seed 15개
+PLAN_SEEDS=(15 16 17 18 19 20 21 22 23 24 25 26 27 28 29)   # 테스트용 planning seed 15개
 
 # 체크포인트 경로(사용 전에 수정 필요) ---------------------------------------
 # Example:
@@ -53,12 +53,13 @@ mkdir -p "${LOG_BASE}"
 
 # 루프 실행 -------------------------------------------------------------------
 pids=()
+job_idx=0
 for idx in "${!DATASETS[@]}"; do
   DATASET="${DATASETS[$idx]}"
-  GPU="${GPU_DEVICES[$((idx % ${#GPU_DEVICES[@]}))]}"
   NST="${N_SAMPLE_TIMESTEPS[$idx]}"
 
   for PLAN_SEED in "${PLAN_SEEDS[@]}"; do
+    GPU="${GPU_DEVICES[$((job_idx % ${#GPU_DEVICES[@]}))]}"
     LOG_FILE="${OUTPUT_DIR}/${DATASET//\//_}_plan${PLAN_SEED}.log"
 
     echo "[실행] GPU ${GPU} | Dataset ${DATASET} | PlanSeed ${PLAN_SEED}"
@@ -81,6 +82,7 @@ for idx in "${!DATASETS[@]}"; do
       > "${LOG_FILE}" 2>&1 &
 
     pids+=("$!")
+    job_idx=$((job_idx + 1))
   done
 
 done

@@ -46,7 +46,7 @@ class Parser(utils.Parser):
 
     dataset: str = "walker2d-medium-replay-v2"
     config: str = "config.locomotion"
-    wandb_project: str = "diffuser_dynamics_video"
+    wandb_project: str = "diffuser_dynamics_scale_test"
 
     # unified extras
     benchmark: str = "d4rl"  # 'd4rl' | 'ogbench'
@@ -66,13 +66,14 @@ value_seed = int(value_seed_match.group(1)) if value_seed_match else -1
 
 plan_seed = args.seed
 
+scale = args.scale
 # Initialize wandb
 wandb.init(
     project=args.wandb_project,
     config=vars(args),
-    name=f"{args.dataset.replace('-v0', '')}_tr{train_seed}_vs{value_seed}_ps{plan_seed}",
-    group=f"TR{train_seed}_VS{value_seed}_{args.dataset.replace('-v0', '')}",
-    tags=[args.dataset.replace('-v0', ''), f"train_seed_{train_seed}", f"value_seed_{value_seed}", f"plan_seed_{plan_seed}"],
+    name=f"{args.dataset.replace('-v0', '')}_tr{train_seed}_vs{value_seed}_ps{plan_seed}_sc{scale}",
+    group=f"TR{train_seed}_VS{value_seed}_{args.dataset.replace('-v0' , '')}_SC{scale}",
+    tags=[args.dataset.replace('-v0', ''), f"train_seed_{train_seed}", f"value_seed_{value_seed}", f"plan_seed_{plan_seed}", f"scale_{scale}"],
     reinit=True,
 )
 wandb.config.update({
@@ -105,6 +106,7 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
 
     total_reward = 0.0
     all_dynamics_data = []
+    all_proportions_data = [] # For custom wandb chart
 
     # video setup
     video_writer = None
@@ -181,6 +183,7 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
         for i in range(obs_dim):
             log_dict[f'dyn_err_dim_{i}'] = float(dynamics_error_vector[i])
             log_dict[f'dyn_err_proportion_dim_{i}'] = float(error_proportion_per_dim[i])
+            all_proportions_data.append([t, i, error_proportion_per_dim[i]])
             
         # diffuser 모드일 때만 세부 값 로깅
         if args.benchmark != 'ogbench':
@@ -230,6 +233,49 @@ def run_episode(env, policy, args, logger, diffusion_exp, value_exp):
 
         if done:
             break
+
+    # Log custom line chart for error proportions in chunks
+    if all_proportions_data:
+        chunk_size = 10
+        # Create a dictionary to hold data for each chunk, structured for line_series
+        # {start_dim: {dim: ([timesteps], [contributions])}}
+        chunked_data = {}
+
+        # Distribute data into the new structure
+        for timestep, dim, contribution in all_proportions_data:
+            chunk_key = (dim // chunk_size) * chunk_size
+            if chunk_key not in chunked_data:
+                chunked_data[chunk_key] = {}
+
+            dim_key = f"dim_{dim:02d}"
+            if dim_key not in chunked_data[chunk_key]:
+                chunked_data[chunk_key][dim_key] = ([], []) # (timesteps, contributions)
+            
+            chunked_data[chunk_key][dim_key][0].append(timestep)
+            chunked_data[chunk_key][dim_key][1].append(contribution)
+
+        # Log a chart for each chunk using line_series
+        for start_dim, data_chunk in chunked_data.items():
+            if not data_chunk:
+                continue
+
+            # Extract keys, xs, and ys from the processed data
+            keys = sorted(data_chunk.keys())
+            xs = [data_chunk[key][0] for key in keys]
+            ys = [data_chunk[key][1] for key in keys]
+            
+            end_dim = min(start_dim + chunk_size, obs_dim)
+            chart_title = f"Error Contribution (Dims {start_dim}-{end_dim-1})"
+            
+            wandb.log({
+                f"error_contribution_dims_{start_dim}_{end_dim-1}": wandb.plot.line_series(
+                    xs=xs,
+                    ys=ys,
+                    keys=keys,
+                    title=chart_title,
+                    xname="Timestep"
+                )
+            })
 
     # Save all dynamics data
     if len(all_dynamics_data) > 0:
